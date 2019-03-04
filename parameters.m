@@ -1,3 +1,6 @@
+%Initial Conditions
+x0=[1, 0, 0.5, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0.2, 1, 1, 0.025,0, 0.1];
+
 v_rated = 690; % Rated Voltage
 s_rated = 2.75e6; % Rated power
 wb = 2*pi*50; % Rated angular frequency
