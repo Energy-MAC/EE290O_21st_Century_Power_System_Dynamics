@@ -1,4 +1,4 @@
-function f = current_control(iod, vod, ioq, voq, icvd, icvq, phi_d, phi_q, xi_d, xi_q, delta_w_vsm, params)
+function f = current_control(iod, vod, ioq, voq, icvd, icvq, phi_d, phi_q, xi_d, xi_q, qm, delta_theta_vsm, delta_w_vsm, params)
 
  %get parameters
  
@@ -11,7 +11,12 @@ function f = current_control(iod, vod, ioq, voq, icvd, icvq, phi_d, phi_q, xi_d,
     lg = params.lg; % Grid inductance in p.u.
     rg = params.rg; % Grid resistance in p.u.    
     wad = params.wad; % Active damping filte
-    
+    rv = params.rv;
+    lv = params.lv;
+    kq = params.kq;
+    q_ref = params.q_ref;
+    v_ref = params.v_ref;
+    vg = params.vg;
 f = [
     
      %d(gamma_d)/dt = 

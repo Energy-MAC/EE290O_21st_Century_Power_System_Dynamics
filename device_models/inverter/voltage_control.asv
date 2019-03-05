@@ -1,10 +1,9 @@
-function f = voltage_control(iod, vod, ioq, voq, icvd, icvq, phi_d, phi_q, xi_d, xi_q, gamma_d, gamma_q, qm, delta_w_vsm, params)
+function f = voltage_control(iod, vod, ioq, voq, icvd, icvq, gamma_d, gamma_q, params)
 
 %get parameters
 
     kpv = params.kpv; % Voltage controller gain
     kiv = params.kiv; % Voltage controller gain
-    kq = params.kq;
     wb = params.wb; 
     wg = params.wg; 
     lf = params.lf; % Filter inductance in p.u.
@@ -15,11 +14,8 @@ function f = voltage_control(iod, vod, ioq, voq, icvd, icvq, phi_d, phi_q, xi_d,
     kffi = params.kffi;
     kpc = params.kpc; % Current controller gain
     kic = params.kic; % Current controller gain
-    rv = params.rv; %Virtual resistance
-    lv = params.lv;% Virtual inductance
-    q_ref = params.q_ref;
-    v_ref = params.v_ref;
-    
+    rv = params.rv; %V
+
 f = [
       %d(vo,d)/dt = 
       wb*wg*voq+...
