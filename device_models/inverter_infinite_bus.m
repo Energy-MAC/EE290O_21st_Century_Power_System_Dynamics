@@ -1,71 +1,40 @@
-function dxdt = inverter_infinite_bus(x)
-parameters;
-vod=x(1);
-voq=x(2);
-icvd=x(3);
-icvq=x(4);
-gamma_d=x(5);
-gamma_q=x(6);
-iod=x(7);
-ioq=x(8);
-phi_d=x(9);
-phi_q=x(10);
-vpll_d=x(11);
-vpll_q=x(12);
-epsilon_pll=x(13);
-delta_theta_vsm=x(14);
-xi_d=x(15);
-xi_q=x(16);
-qm=x(17);
-delta_w_vsm=x(18);
-delta_theta_pll=x(19);
+function inverter_dxdt = inverter_infinite_bus(x,inverter_params)
 
-dxdt=[wb*wg*voq+wb*icvd/cf-wb*iod/cf;%d(vo,d)/dt
-    %d(vo,q)/dt
-      -wb*wg*vod+wb*icvq/cf-wb*ioq/cf;
-     %d(icv,d)/dt
-      (wb*(kffv-1-kad-kpc*kpv))*vod/lf-wb*cf*kpc*wg*voq/lf-...
-      wb*(kpc+rf)*icvd/lf+wb*kic*gamma_d/lf+wb*kpc*(kffi-kpv*rv)*iod/lf+...
-      wb*kpc*kpv*lv*wg*ioq/lf+wb*kad*phi_d/lf+wb*kiv*kpc*xi_d/lf-...
-      wb*kpc*kpv*kq*qm/lf-wb*icvq*delta_w_vsm+wb*kpc*kpv*lv*ioq*delta_w_vsm/lf-...
-      wb*cf*kpc*voq*delta_w_vsm/lf+wb*kpc*kpv*kq*q_ref/lf+wb*kpc*kpv*v_ref/lf; 
-      %d(icv,q)/dt
-      wb*cf*kpc*wg*vod/lf+(wb*(kffv-1-kad-kpc*kpv))*voq/lf-wb*(kpc+rf)*icvq/lf+...
-      wb*kic*gamma_q/lf-wb*kpc*kpv*lv*wg*iod/lf+wb*kpc*(kffi-kpv*rv)*ioq/lf+...
-      wb*kad*phi_q/lf+wb*kiv*kpc*xi_q/lf+wb*icvd*delta_w_vsm-...
-      wb*kpc*kpv*lv*iod*delta_w_vsm/lf-wb*cf*kpc*vod*delta_w_vsm/lf; 
-      %d(gamma_d)/dt
-      -kpv*vod-cf*wg*voq-icvd+(kffi-kpv*rv)*iod+kpv*lv*wg*ioq+kiv*xi_d+...
-      kpv*kq*qm+kpv*lv*ioq*delta_w_vsm-cf*voq*delta_w_vsm+kpv*kq*q_ref+kpv*v_ref; 
-      %d(gamma,q)/dt
-      cf*wg*vod-kpv*voq-icvq-kpv*lv*wg*iod+(kffi-kpv*rv)*ioq+kiv*xi_q-...
-      kpv*lv*iod*delta_w_vsm+cf*vod*delta_w_vsm; 
-      %d(io,d)/dt
-      wb*vod/lg-wb*rg*iod/lg+wb*wg*ioq+wb*vg*cos(delta_theta_vsm)/lg; 
-      %d(io,q)/dt
-      wb*voq/lg-wb*wg*iod-wb*rg*ioq/lg+wb*vg*sin(delta_theta_vsm)/lg; 
-      %d(phi_d)/dt
-      wad*vod-wad*phi_d; 
-      %d(phi_q)/dt
-      wad*voq-wad*phi_q; 
-      %d(vpll,d)/dt
-      wlp*vod*cos(delta_theta_pll-delta_theta_vsm)+...
-      wlp*voq*sin(delta_theta_pll-delta_theta_vsm)-wlp*vpll_d;
-      %d(vpll,q)/dt
-      -wlp*vod*sin(delta_theta_pll-delta_theta_vsm)+...
-      wlp*voq*cos(delta_theta_pll-delta_theta_vsm)-wlp*vpll_q;
-      %d(epsilon_pll)/dt
-      atan(vpll_q/vpll_d);
-      %d(delta_theta_vsm)/dt
-      wb*delta_w_vsm; 
-      %d(xi_d)/dt
-      -vod-rv*iod+lv*wg*ioq-kq*qm+lv*ioq*delta_w_vsm+kq*q_ref+v_ref;
-      %d(xi_q)/dt
-      -voq-lv*wg*iod-rv*ioq-lv*iod*delta_w_vsm;
-      %d(qm)/dt
-      -wf*ioq*vod+wf*iod*voq-wf*qm;
-      %d(delta_w_vsm)/dt
-      -iod*vod/Ta-ioq*voq/Ta+kd*kp_pll*atan(vpll_q/vpll_d)/Ta+...
-      kd*ki_pll*epsilon_pll/Ta-(kd+kw)*delta_w_vsm/Ta+p_ref/Ta+kw*w_ref/Ta-kw*wg/Ta;
-      %delta_theta_pll
-       wb*kp_pll*atan(vpll_q/vpll_d)+wb*ki_pll*epsilon_pll];
+    %VSM variables
+    delta_theta_vsm=x(14);
+    delta_w_vsm=x(18);
+
+    %VCO Variables
+    vod=x(1);
+    voq=x(2);
+
+    %ICO Variables
+    icvd=x(3);
+    icvq=x(4);
+    gamma_d=x(5);
+    gamma_q=x(6);
+    iod=x(7);
+    ioq=x(8);
+
+    phi_d=x(9);
+    phi_q=x(10);
+
+    % PLL Variables
+    vpll_d=x(11);
+    vpll_q=x(12);
+    epsilon_pll=x(13);
+
+    xi_d=x(15);
+    xi_q=x(16);
+    qm=x(17);
+
+    delta_theta_pll=x(19);
+
+inverter_dxdt=[
+           vsm_inertia(iod, vod, ioq, voq, vpll_d, vpll_q, epsilon_pll, delta_w_vsm, inverter_params);
+           voltage_control(iod, vod, ioq, voq, icvd, icvq, gamma_d, gamma_q, inverter_params)
+           current_control(iod, vod, ioq, voq, icvd, icvq, phi_d, phi_q, xi_d, xi_q, delta_w_vsm, inverter_params)
+           PLL(vpll_d, vpll_q, vod, voq, delta_theta_pll, epsilon_pll, delta_theta_vsm, inverter_params)  
+           reactive_power_droop(iod, vod, ioq, voq, qm, inverter_params)    
+      
+       ];
