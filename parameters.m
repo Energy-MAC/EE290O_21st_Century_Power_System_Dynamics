@@ -12,7 +12,26 @@ Eo=1;
 
 %% Inverter Parameters
 %Initial Conditions Inverter
-x0_inverter=[1, 0, 0.5, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0.2, 1, 1, 0.025,0, 0.1];
+x0_inverter=[
+        1 ...      % 1: vod
+        0 ...      % 2: voq
+        0.5 ...    % 3: icvd             - Fig 13, D'Arco et al 2015
+        0 ...      % 4: icvq             - Fig 13, D'Arco et al 2015
+        0 ...      % 5: gamma_d
+        1 ...      % 6: gamma_q
+        1 ...      % 7: iod
+        1 ...      % 8: ioq
+        1 ...      % 9: phi_d
+        1 ...      %10: phi_q
+        1 ...      %11: vpll_d
+        1 ...      %12: vpll_q
+        1 ...      %13: epsilon_pll
+        0.2 ...    %14: delta_theta_vsm  - Fig 10, D'Arco et al 2015
+        1 ...      %15: xi_d
+        1 ...      %16: xi_q
+        0.025 ...  %17: qm               - Fig 11, D'Arco et al 2015
+        0 ...      %18: delta_w_vsm
+        0.1];      %19: delta_theta_pll  - Fig 10, D'Arco et al 2015
 
 %VSM Parameters
 inverter_params.Ta = 2; % VSM Inertia constant 
