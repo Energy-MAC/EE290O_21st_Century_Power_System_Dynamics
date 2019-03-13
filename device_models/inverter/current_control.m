@@ -30,7 +30,7 @@ f = [
       kpv*lv*ioq*delta_w_vsm-...
       cf*voq*delta_w_vsm+... *changed sign of cf*voq*delta_w_vsm to -
       kpv*kq*q_ref+... *changed sign of kpv*kq*q_ref to +
-      +kpv*v_ref; 
+      kpv*v_ref; 
       
       %d(gamma,q)/dt = 
       cf*wg*vod-...
