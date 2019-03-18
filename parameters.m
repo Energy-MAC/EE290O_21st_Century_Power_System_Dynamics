@@ -1,14 +1,20 @@
 %% SynchMachine Parameters
-Xl=0.5;
-Xth=0.25;
-Xg=0.25;
-V1o=1;
-V=1;
-M=0.1;    
-D=0.1;  
-Pd=0.9;
-Kv=10; 
-Eo=1; 
+gen.Xg=0.25;
+gen.M=0.1;    
+gen.D=0.1;  
+gen.Pd=0.9;
+gen.V0=1.1;
+AVR.Kv=10; 
+AVR.E0=1; 
+AVR.V_sp=1;
+
+%% Inf bus parameters 
+infbus.Xth = 0.25;
+infbus.V_inf = 1.0;
+infbus.Theta_inf = 0.0;
+
+%%Line parameters 
+line.Xl = 0.65;
 
 %% Inverter Parameters
 %Initial Conditions Inverter
