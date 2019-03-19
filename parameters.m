@@ -4,17 +4,18 @@ gen.M=0.1;
 gen.D=0.1;  
 gen.Pd=0.9;
 gen.V0=1.1;
+
 AVR.Kv=10; 
 AVR.E0=1; 
 AVR.V_sp=1;
 
 %% Inf bus parameters 
 infbus.Xth = 0.25;
-infbus.V_inf = 1.0;
+infbus.V_inf = 1.1;
 infbus.Theta_inf = 0.0;
 
 %%Line parameters 
-line.Xl = 0.65;
+line.Xl = 0.5;
 
 %% Inverter Parameters
 %Initial Conditions Inverter

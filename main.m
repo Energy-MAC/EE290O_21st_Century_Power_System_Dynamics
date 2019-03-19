@@ -5,13 +5,10 @@ addpath('utils')
 parameters
 
 %% Set- up initialization - Find Initial Equilibrium Point
-options_fsolve = optimoptions('fsolve','Algorithm','trust-region-dogleg','StepTolerance', 1e-8,'FunctionTolerance', 1e-8,'MaxFunctionEvaluations',500000, 'MaxIterations',100000,'StepTolerance',1e-8,'OptimalityTolerance', 1e-8);
-flow_init = fsolve(@(x)pf_eqs(x, gen, line, infbus), [0 0 1], options_fsolve); 
-machine_init = fsolve(@(x)generator(x,[flow_init(1), flow_init(2), flow_init(3)*cos(flow_init(2)), flow_init(3)*sin(flow_init(2))], gen),[1.0, 0.0, 1.0], options_fsolve);    
-%AVR_init simple feedback model isn't a problem
+options_fsolve = optimoptions('fsolve','Algorithm','Levenberg-Marquardt','StepTolerance', 1e-8,'FunctionTolerance', 1e-8,'MaxFunctionEvaluations',500000, 'MaxIterations',100000,'StepTolerance',1e-8,'OptimalityTolerance', 1e-8);
+flow_init = fsolve(@(x)pf_eqs(x, 1.0, gen, line, infbus), [0.5 0.1], options_fsolve); 
+%machine_init = fsolve(@(x)generator(x, [gen.Pd, flow_init(1), flow_init(2), 1.0], gen),[1.0, 0.0, 1.0], options_fsolve);    
 
-%% Solve DAE.
+%[t, y] = ode15s(@(t, x)AVRSM_IF(t, x, gen, AVR, line, infbus), [0:0.001,10],[machine_init, [gen.Pd, flow_init(1), flow_init(2), 1.0]]);
 
-[t, y] = ode23t(@AVRSM_IF,[0:0.001,t3],[flow_init, machine_init]);
-
-
+[t, r] = ode15s(@(t, x)generator(t, x, gen), [0:0.001,10],[[1.06, 1.11, 0.00], [gen.Pd, flow_init(1), flow_init(2)]]);
