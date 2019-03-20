@@ -11,7 +11,7 @@ AVR.V_sp=1;
 
 %% Inf bus parameters 
 infbus.Xth = 0.25;
-infbus.V_inf = 1.1;
+infbus.V_inf = 1.0;
 infbus.Theta_inf = 0.0;
 
 %%Line parameters 

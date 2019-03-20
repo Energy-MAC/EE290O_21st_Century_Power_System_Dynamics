@@ -33,7 +33,7 @@ if E<0, E=0; end;
 %
 % Nonlinear ODEs:
 %
-dwdt = 1/M *(Pd - E*V/X*sin(d) - D*w);
+dwdt = 1/M *(Pd - E*V1/X*sin(d) - D*w);
 dddt = w;
 dEdt =  Kv* (V1o - V1);
 if E==0,  dEdt=0; end;
