@@ -13,7 +13,7 @@ function [vars] = pf_eqs(x, y, machine_params, line_params, infbus_params)
     
     Pd = machine_params.Pd;
     
-    P_res =  Pd - V_inf*V_g/X*sin(theta-theta_inf);
+    P_res =  Pd - V_inf*V_g*sin(theta-theta_inf)/X;
     Q_res =  Q_g - (V_g^2/(X) - V_inf*V_g*cos(theta-theta_inf)/X);
     
     vars = [P_res, Q_res]';
