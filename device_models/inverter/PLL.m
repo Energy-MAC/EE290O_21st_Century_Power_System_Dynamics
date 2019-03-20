@@ -6,6 +6,7 @@ function f = PLL(vpll_d, vpll_q, vod, voq, delta_theta_pll, epsilon_pll, delta_t
     kp_pll = params.kp_pll; % PLL proportional gain
     ki_pll = params.ki_pll; % PLL integraql gain 
     wb = params.wb;
+    wg = params.wg;
 
 f = [
       %d(vpll,d)/dt = 
@@ -23,7 +24,8 @@ f = [
       
        %delta_theta_pll = 
        wb*kp_pll*atan(vpll_q/vpll_d)+...
-       wb*ki_pll*epsilon_pll
+       wb*ki_pll*epsilon_pll+...
+       wg; % Paper eqn error: should have included +wg
        
        ];
 end
