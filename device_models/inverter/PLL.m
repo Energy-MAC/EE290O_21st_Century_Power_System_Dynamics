@@ -24,8 +24,7 @@ f = [
       
        %delta_theta_pll = 
        wb*kp_pll*atan(vpll_q/vpll_d)+...
-       wb*ki_pll*epsilon_pll+...
-       wg; % Paper eqn error: should have included +wg
+       wb*ki_pll*epsilon_pll;
        
        ];
 end

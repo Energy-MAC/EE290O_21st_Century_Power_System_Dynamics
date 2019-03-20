@@ -11,31 +11,9 @@ Kv=10;
 Eo=1; 
 
 %% Inverter Parameters
-%Initial Conditions Inverter
-x0=[
-        1.02 ...   % 1: vod              - Steady state = v_ref
-       -0.00074 ...% 2: voq              - From d_vod/dt = 0 and other inits
-        0.5 ...    % 3: icvd             - Fig 13, D'Arco et al EPSR 122 (2015)
-        0.0 ...    % 4: icvq             - Fig 13, D'Arco et al EPSR 122 (2015)
-        0.005 ...  % 5: gamma_d          - Infer small from large gains
-        0.001 ...  % 6: gamma_q          - Infer small from large gains
-        0.49 ...   % 7: iod              - Fig 12, D'Arco at al EPES 72 (2015)
-        0.075 ...  % 8: ioq              - From d_voq/dt = 0 and other inits //-0.132 is from Fig 12, D'Arco at al ESPR 72 (2015)
-        1.02 ...   % 9: phi_d            - Infer from d_phi_d/dt = 0
-       -0.10 ...   %10: phi_q            - Infer from d_phi_q/dt = 0
-        1.004 ...  %11: vpll_d           - Infer from d_vpll_
-        0 ...      %12: vpll_q           - Infer from d_epsilon_pll/dt = 0
-       -0.0007 ... %13: epsilon_pll      - Infer from d_theta_pll/dt = 0; 1/(2*pi*50*4.69)
-        0.2 ...    %14: delta_theta_vsm  - Fig 10, D'Arco et al, EPSR 122 (2015), "SmartGrids"
-        0.0015 ... %15: xi_d             - Infer from d_gamma_d?/dt = 0
-        1.2e-04... %16: xi_q             - Infer from d_gamma_q?/dt = 0
-        0.025 ...  %17: qm               - Fig 11, D'Arco et al, EPSR 122 (2015), "SmartGrids"
-        0 ...      %18: delta_w_vsm      - Should be near grid at op pt; Infer from d_delta_w_vsm/dt = 0
-        0.1];      %19: delta_theta_pll  - Fig 10, D'Arco et al, EPSR 122 (2015), "SmartGrids"
-
 %VSM Parameters
 inverter_params.Ta = 2; % VSM Inertia constant 
-inverter_params.kd = 0;%400; % VSM Damping co-efficient
+inverter_params.kd = 400; % VSM Damping co-efficient
 inverter_params.kw = 20; % Frequency droop gain in p.u.
 inverter_params.p_ref = 0.5; % Active power reference in p.u.
 inverter_params.w_ref = 1; %Inverter frequency set point in p.u.
@@ -71,5 +49,27 @@ inverter_params.rv = 0; % Virtual resistance in p.u.
 inverter_params.wlp = 500; % PLL filter in rad/s
 inverter_params.kp_pll = 0.084; % PLL proportional gain
 inverter_params.ki_pll = 4.69; % PLL integraql gain 
-inverter_params.kffv = 1; % Binary variable enabling the votlage feed-forward in output of current controllers
+inverter_params.kffv = 0; % Binary variable enabling the votlage feed-forward in output of current controllers
 inverter_params.kffi = 0;
+
+%Initial Conditions Inverter
+x0=[
+    0.95 ...    % 1: vod              - Fig 8 or 10c, D'Arco at al EPES 72 (2015), but at steady state = v_ref?
+   -0.1 ...     % 2: voq              - Infer from d_vpll_q/dt = 0, i.e. -vod*tan(0.1) w/ vod ~ 1; or power flow?
+    0.5 ...     % 3: icvd             - Fig 13, D'Arco et al EPSR 122 (2015)
+    0.0 ...     % 4: icvq             - Fig 13, D'Arco et al EPSR 122 (2015)
+    0.005 ...   % 5: gamma_d          - Infer small from large gains
+   -0.001 ...   % 6: gamma_q          - Infer small from large gains
+    0.49 ...    % 7: iod              - Fig 12, D'Arco at al EPES 72 (2015)
+   -0.1 ...     % 8: ioq              - Fig 12, D'Arco at al ESPR 72 (2015)
+    0.95 ...    % 9: phi_d            - Infer from d_phi_d/dt = 0; Guess close to vod
+   -0.10 ...    %10: phi_q            - Infer from d_phi_q/dt = 0; Guess close to -voq
+    1.004 ...   %11: vpll_d           - Infer from d_pll_d = 0; vod*cos(0.1)+voq*sin(0.1)
+    0 ...       %12: vpll_q           - Infer from d_epsilon_pll/dt = 0
+    0 ...       %13: epsilon_pll      - Infer from d_delta_theta_pll/dt = 0
+    0.2 ...     %14: delta_theta_vsm  - Fig 10, D'Arco et al, EPSR 122 (2015), "SmartGrids"
+    0.0015 ...  %15: xi_d             - Infer from d_gamma_d/dt = 0
+   -0.07 ...    %16: xi_q             - Infer from d_gamma_q/dt = 0
+    0.025 ...   %17: qm               - Fig 11, D'Arco et al, EPSR 122 (2015), "SmartGrids"
+    0 ...       %18: delta_w_vsm      - Should be near grid at op pt; Infer from d_delta_w_vsm/dt = 0
+    0.1];       %19: delta_theta_pll  - Fig 10, D'Arco et al, EPSR 122 (2015), "SmartGrids"
