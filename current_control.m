@@ -21,4 +21,6 @@ B=[KQi -KQi 0;...
     0 0 0];
 C=[0 1];
 D=[0 0 1/Vterm];
-mySys=ss(A,B,C,D);
+
+% naming is needed for concatenation
+mySys=ss(A,B,C,D,'InputName',{'cur_Qcmd','cur_Qgen','cur_Pord'},'OutputName',{'Iqcmd','Ipcmd'});

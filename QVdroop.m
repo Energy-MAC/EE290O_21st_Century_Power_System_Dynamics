@@ -3,10 +3,10 @@ function mySys = QVdroop(Vmeas, Vref, Vslow, params)
 % other subsystems of in the inverter
 
 % Inputs, outputs, and params of state space rep:
-    % Inputs: Vmeas, Vref, Vslow
+    % Inputs: [Vmeas, Vref]
     % Vslow omitted for now, involves detuning controller in the case of
     % multiple actuators causing adverse interactions
-% Outputs: Q_cmd
+% Outputs: [Q_cmd]
 % -----------------------------------------------
 
 % Set parameters
@@ -27,4 +27,6 @@ B=[1/Tr 0;...
     0 Ki];
 C=[0 0 1 0]';
 
-mySys=ss(A,B,C,[]);
+% naming is needed for concatenation
+mySys=ss(A,B,C,[],'InputName',{'dr_Vmeas','dr_Vref'},'OutputName',{'dr_Qcmd'});
+

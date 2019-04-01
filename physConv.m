@@ -13,5 +13,7 @@ params.Klv % placeholder for low voltage management curve
 params.K_LPVL % placeholder for limiting Pmax from low V management curve
 params.Xlcl % reactance of LCL filter
 
-mySys=1; % filler, need to replace
+% Diff Eqs or alg eqs go here
 
+ % Need to populate
+mySys=ss([],[],[],[],'InputName',{'Iqcmd','Ipcmd'},'OutputName',{'Iterm'});
