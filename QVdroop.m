@@ -1,21 +1,19 @@
-function Q_cmd = QVdroop(Vmeas, Vref, Vslow, params)
-% Inputs: Vmeas, Vref, Vslow
-% Vslow omitted for now, involves detuning controller in the case of
-% multiple actuators causing adverse interactions
+function mySys = QVdroop(Vmeas, Vref, Vslow, params)
+% Function returns the sys in state space form, to be concatenated with
+% other subsystems of in the inverter
 
-% Params: Tc,Tr,Tv,Vfrz
-% delay constants are for control,meas,and ? respectively
-% Vfrz ommitted for now, involves freezing the inverter if voltage gets too
-% low, perhaps something like ant-windup action
-
+% Inputs, outputs, and params of state space rep:
+    % Inputs: Vmeas, Vref, Vslow
+    % Vslow omitted for now, involves detuning controller in the case of
+    % multiple actuators causing adverse interactions
 % Outputs: Q_cmd
 % -----------------------------------------------
 
 % Set parameters
-Tc=params.Tc
-Tr=params.Tr
-Tv=params.Tv
-Vfrz=params.frz % not used for now
+Tc=params.Tc % communications and actuation delay
+Tr=params.Tr % meas delay
+Tv=params.Tv % unsure
+Vfrz=params.frz % ommitted for now, involves freezing the inverter if voltage gets too low, perhaps something like ant-windup action
 
 % See handwritten work for derivation of state space form from GE PV
 % inverter paper "Solar Photovoltaic (PV) Plant Models in PSLF"
