@@ -1,7 +1,7 @@
 function [vars] = AVRSM_IFSE(t, x)
 
     Xl = 0.5;
-   if t >= 1  %contingency
+   if t > 1  %contingency
       Xl = Xl+0.10;
    end
 
@@ -36,7 +36,7 @@ function [vars] = AVRSM_IFSE(t, x)
    
 
     P_res =  Pd - V_inf*V_g*sin(theta-theta_inf)/X;
-    Q_res =  (vq*id - vd*iq) + (V_g^2/(X) - V_inf*V_g*cos(theta-theta_inf)/X);
+    Q_res =  (vq*id - vd*iq) - (V_g^2/(X) - V_inf*V_g*cos(theta-theta_inf)/X);
         
     
     %Machine Non-linear ODE's
