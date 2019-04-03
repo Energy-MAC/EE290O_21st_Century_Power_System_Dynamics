@@ -27,7 +27,7 @@ function f = vsm_inertia(iod, vod, ioq, voq, vpll_d, vpll_q, epsilon_pll, delta_
       kw*wg/Ta;
 
     %d(delta_theta_vsm)/dt = 
-       wb*delta_w_vsm 
+      wb*delta_w_vsm 
 
                                         ];
 
