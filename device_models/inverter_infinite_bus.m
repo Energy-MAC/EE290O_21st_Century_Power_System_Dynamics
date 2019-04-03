@@ -1,4 +1,4 @@
-function inverter_dxdt = inverter_infinite_bus(x,inverter_params)
+function inverter_dxdt = inverter_infinite_bus(t,x,inverter_params)
 
     %VSM variables
     delta_theta_vsm=x(14);
@@ -29,7 +29,7 @@ function inverter_dxdt = inverter_infinite_bus(x,inverter_params)
     qm=x(17);
 
     delta_theta_pll=x(19);
-
+    
 inverter_dxdt=[
            vsm_inertia(iod, vod, ioq, voq, vpll_d, vpll_q, epsilon_pll, delta_w_vsm, inverter_params);
            voltage_control(iod, vod, ioq, voq, icvd, icvq, phi_d, phi_q, xi_d, xi_q, gamma_d, gamma_q, qm, delta_w_vsm, inverter_params)
