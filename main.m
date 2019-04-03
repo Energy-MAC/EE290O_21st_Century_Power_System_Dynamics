@@ -2,11 +2,7 @@ clear
 clc
 %% Load data
 
-file_buses = 'bus_data.csv'; %load bus data
-file_lines = 'line_data.csv'; %load line data
-
-M_lines = csvread(file_lines, 1,1); %Read line data as Matrix. 1,1 means that it skips the first row and first column
-M_buses = csvread(file_buses, 1,2); %Read bus data as Matrix. 1,2 means that skips first row and the two first columns
+[M_lines,M_buses] = load_network('example_3bus');
 
 %% Construct parameters
 

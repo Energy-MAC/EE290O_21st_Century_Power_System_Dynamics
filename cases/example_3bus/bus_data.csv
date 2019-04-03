@@ -1,0 +1,4 @@
+BusName,BusNumber,Conductance [pu],Capacitance [pu]
+Bus1,1,11,0.02
+Bus2,2,12,0.06
+Bus3,3,13,0.09
