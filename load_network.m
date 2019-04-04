@@ -26,8 +26,9 @@ elseif try_matpower
         error('Could not load MATPOWER case. Make sure MATPOWER is installed and on the path');
     end
     mkdir(sprintf('%s/%s',case_dir,case_name));
-    % Build bus matrix
-    M_buses = c.bus(:,[5 6]);
+    % Build bus matrix; MATPOWER G and B given in units per MVA, converte
+    % to p.u.
+    M_buses = c.bus(:,[5 6])/c.baseMVA;
     % MATPOWER gives susceptance instead of capacitance; assume 60 Hz to
     % convert.
     M_buses(:,2) = M_buses(:,2)/(120*pi);
@@ -45,7 +46,6 @@ elseif try_matpower
     M_lines(:,2) = M_lines(:,2)/(120*pi);
     
     % Write branch matrix
-    N_lines = size(M_lines,1);
     to_write = cell2table([compose('Line%d%d',M_lines(:,[3 4])) num2cell(M_lines)],...
         'VariableNames',{'LineName','Resistance_pu','Inductance_pu','SendingBus','ReceivingBus'});
     writetable(to_write,sprintf('%s/%s/line_data.csv',case_dir,case_name));
