@@ -76,7 +76,7 @@ for i=1:loads_size %For each load
     L_loads(2*i-1:2*i, 2*i-1:2*i) = l_load*eye(2); %Inductance Matrix (dq) of load i
     Z_loads(2*i-1:2*i, 2*i-1:2*i) = R_loads(2*i-1:2*i, 2*i-1:2*i) ...
         + j*omega0*L_loads(2*i-1:2*i, 2*i-1:2*i); %Impedance matrix (dq) of load i
-    I_inc_loads(2*bus_number-1:2*bus_number, 2*i-1:2*i) = eye(2); % Incidence of load i connected to bus_number
+    I_inc_loads(2*bus_number-1:2*bus_number,
 end
 inv_L_loads = inv(L_loads); %Compute inverse of L
 

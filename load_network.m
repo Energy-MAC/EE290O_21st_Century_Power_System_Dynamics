@@ -6,16 +6,26 @@ if nargin < 2
 end
 
 case_dir = 'cases';
+bus_file = sprintf('%s/%s/bus_data.csv',case_dir,case_name);
+line_file = sprintf('%s/%s/line_data.csv',case_dir,case_name);
 
 % First look for local files
-if exist(sprintf('%s/%s',case_dir,case_name), 'dir')
+if exist(bus_file, 'file') && exist(line_file, 'file')
     try
-        M_lines = csvread(sprintf('%s/%s/line_data.csv',case_dir,case_name), 1,1); %Read line data as Matrix. 1,1 means that it skips the first row and first column
+        M_lines = csvread(line_file, 1,1); %Read line data as Matrix. 1,1 means that it skips the first row and first column
     catch
         error('Could not read line data');
     end
     try
-        M_buses = csvread(sprintf('%s/%s/bus_data.csv',case_dir,case_name), 1,2); %Read bus data as Matrix. 1,2 means that skips first row and the two first columns
+        M_buses = csvread(bus_file, 1,1); %Read bus data as Matrix.
+        % Sort by ascending bus number
+        M_buses = sortrows(M_buses,1);
+        % Check that bus numbers are complete
+        if M_buses(end,1) ~= size(M_buses,1)
+            error('Bus numbers are not complete');
+        end
+        % Remove bus number now that they are in order
+        M_buses = M_buses(:,2:end);
     catch
         error('Could not read bus data');
     end
@@ -25,7 +35,9 @@ elseif try_matpower
     catch
         error('Could not load MATPOWER case. Make sure MATPOWER is installed and on the path');
     end
-    mkdir(sprintf('%s/%s',case_dir,case_name));
+    if ~exist(sprintf('%s/%s',case_dir,case_name),'dir')
+        mkdir(sprintf('%s/%s',case_dir,case_name));
+    end
     % Build bus matrix; MATPOWER G and B given in units per MVA, converte
     % to p.u.
     M_buses = c.bus(:,[5 6])/c.baseMVA;
