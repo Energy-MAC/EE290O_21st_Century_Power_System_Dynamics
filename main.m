@@ -80,18 +80,29 @@ for i=1:loads_size %For each load
 end
 inv_L_loads = inv(L_loads); %Compute inverse of L
 
+%% Define a parameter struct to handle all the data
+
+param.R_lines = R_lines;
+param.L_lines = L_lines;
+param.Z_lines = Z_lines;
+param.inv_L_lines = inv_L_lines;
+param.E_inc = E_inc;
+param.G_buses = G_buses;
+param.C_buses = C_buses;
+param.Y_buses = Y_buses;
+param.inv_C_buses = inv_C_buses;
+
 %% Solve differential equation
 num_variables = 2*buses_size + 2*lines_size; %number of variables
 
-tspan = [0,0.05];
-y0 = zeros(num_variables, 1); %initial condition
+tspan = [0,0.2];
+x0 = zeros(num_variables, 1); %initial condition
 Mass_Matrix = eye(num_variables);
 options = odeset('Mass', Mass_Matrix);
 
 %Solve differential equation system. You can pass parameters to the
 %function using this technique
-[t,y] = ode15s(@(t,y)ode_full_system_modular(t,y,inv_L_lines, Z_lines, ...
-    E_inc, inv_C_buses, Y_buses), tspan, y0, options);
+[t,x] = ode15s(@(t,x)ode_full_system_modular(t,x,param), tspan, x0, options);
 
 
-plot(t,y)
+plot(t,x)
