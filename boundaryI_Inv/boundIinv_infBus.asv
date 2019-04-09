@@ -29,11 +29,9 @@ Vref=1;
 inverter_dxdt=[
 % DAEs
     QVdroop(x_QVdroop,Vmeas, Vref,Qcmd,params); % 4 diff eq
-    current_control(x_Ictrl,Qcmd, Qgen, Vterm,Iqcmd, Ipcmd, inverter_params); % 2 diff eq, 1 alg
-    physConv(x_phys,Ipcmd,Iqcmd,Vterm,Iterm,params) % 2 diff eq, 1 alg
+    current_control(x_Ictrl,Qcmd, Qgen, Vterm,Iqcmd, Ipcmd, inverter_params); % 2 diff, 1 alg
+    physConv(x_phys,Ipcmd,Iqcmd,Vterm,Iterm,params) % 2 diff, 1 alg
     ];
-
-
 %% Create combined inv model
 % using series MATLAB func reference: https://www.mathworks.com/help/control/ref/series.html
 sys1= QVdroop(Vmeas, Vref, Vslow, params)
