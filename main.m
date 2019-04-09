@@ -30,7 +30,7 @@ for i=1:lines_size %For each line
    Z_lines(2*i-1:2*i, 2*i-1:2*i) = R_lines(2*i-1:2*i, 2*i-1:2*i) ...
        + j*omega0*L_lines(2*i-1:2*i, 2*i-1:2*i); %Impedance matrix (dq) of line i  
 end
-inv_L_lines = inv(L_lines); %Compute inverse of L
+inv_L_lines = pinv(L_lines); %Compute pseudo-inverse of L. Pseudo to account for lines with no inductance.
 
 %Initialize Incidence Matrix
 E_inc = zeros(2*buses_size, 2*lines_size);
@@ -59,7 +59,7 @@ for i=1:buses_size
     Y_buses(2*i-1:2*i, 2*i-1:2*i) =  G_buses(2*i-1:2*i, 2*i-1:2*i) ...
         + j*omega0*C_buses(2*i-1:2*i, 2*i-1:2*i); %Admittance Matrix (dq) of bus i
 end
-inv_C_buses = inv(C_buses); %Compute inverse of C
+inv_C_buses = pinv(C_buses); %Compute inverse of C
 
 %Initialize load matrices
 L_loads = zeros(2*loads_size, 2*loads_size);
@@ -78,7 +78,7 @@ for i=1:loads_size %For each load
         + j*omega0*L_loads(2*i-1:2*i, 2*i-1:2*i); %Impedance matrix (dq) of load i
     I_inc_loads(2*bus_number-1:2*bus_number, 2*i-1:2*i) = eye(2); % Incidence of load i connected to bus_number
 end
-inv_L_loads = inv(L_loads); %Compute inverse of L
+inv_L_loads = pinv(L_loads); %Compute inverse of L
 
 %% Define a parameter struct to handle all the data
 
