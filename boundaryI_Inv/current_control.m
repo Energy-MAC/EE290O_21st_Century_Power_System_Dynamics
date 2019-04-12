@@ -1,4 +1,4 @@
-function f = current_control(x_Ictrl,Qcmd, Qgen,Iqcmd, Ipcmd,params)
+function f = current_control(x_Ictrl,Qcmd, Qgen,Vterm,Iqcmd, Ipcmd,params)
 % Function returns the sys in state space form, to be concatenated with
 % other subsystems of in the inverter
 % Inputs: [Qcmd, Qgen]
@@ -12,7 +12,6 @@ function f = current_control(x_Ictrl,Qcmd, Qgen,Iqcmd, Ipcmd,params)
 % Ipmax=params.Ipmax % not used yet
 Kvi=params.Kvi
 Kqi=params.Kqi
-Vterm=params.Vterm
 Pord=params.Pord
 
 % % See handwritten work for derivation of state space form from GE PV

@@ -13,7 +13,6 @@ inverter_params.Pmax=700; % kW
 inverter_params.Pmin=0; % kW
 inverter_params.Qmax=99 % kVar, for 0.99 pow factor
 inverter_params.Qmin=-99 % kVar
-inverter_params.Vterm=480; % V
 inverter_params.Vref=480; % V
 inverter_params.Vmeas=480; % TEMP
 inverter_params.Pord=500 % arbitrary, user-written solar pow profile
@@ -50,11 +49,12 @@ inverter_params.Klv=1; % for now,
 % inf bus network
 inverter_params.Xe=0.1;
 inverter_params.ZL=0.1;
-inverter_params.Vinf=1000;
+inverter_params.Vinf=480;
+inverter_params.theta_inf=0;
 
-% x0=zeros(16,1) % TEMP
-% x0(4)=480; x0(5)=480;
+ %x0=zeros(17,1) % TEMP
+% x0(4)=480; x0(6)=480;
 
 % Simple:
-x0=[480 0 0 0.1 0.1]';
+x0=[480 0 0 0 0 0]';
 

@@ -1,4 +1,4 @@
-function f = QVdroop(x_QVdroop,Vg, Vref,Qcmd,params) 
+function f = QVdroop(x_QVdroop,Vterm, Vref,Qcmd,params) 
 % Function returns the sys in state space form, to be concatenated with
 % other subsystems of in the inverter
 
@@ -38,7 +38,7 @@ g3=x_QVdroop(3)
 
 f=[
     %d(g1)/dt=
-    (1/Tr)*(Vg-g1); % Vg=Vmeas
+    (1/Tr)*(Vterm-g1); % Vterm=Vmeas
     % d(g2)/dt=
     (1/Tv)*(Kpv*(Vref-g1)-g2);
     %d(g3)/dt=

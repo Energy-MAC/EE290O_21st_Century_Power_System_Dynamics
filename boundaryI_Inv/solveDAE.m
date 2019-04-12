@@ -1,3 +1,5 @@
+
+%%
 clc; close all; clear all;
 %%Load System Models and Parameters
 % addpath(genpath('device_models'))
@@ -9,9 +11,13 @@ parameters % call the parameters.m to set populate workspace
 
 %%
 options_dae = optimoptions('fsolve','Algorithm','trust-region-dogleg','StepTolerance', 1e-8,'FunctionTolerance', 1e-8,'MaxFunctionEvaluations',500000, 'MaxIterations',100000,'StepTolerance',1e-8,'OptimalityTolerance', 1e-8);
-x00 = fsolve(@(x)bound_infSimple(x,inverter_params),x0,options_dae);
+x00 = fsolve(@(x)bound_infSimple(x,inverter_params),x0);
+
+
+
 
 %% Setup DAE init and mass matrix
+% refernce for mass matrix: https://www.mathworks.com/help/matlab/math/solve-differential-algebraic-equations-daes.html
 % have not run this yet, still fixing up
 y0 = [1; 0; 0];
 tspan = [0 4*logspace(-6,6)];
@@ -26,7 +32,7 @@ M(14,14)=0; % alg eq, inf bus network
 % options = odeset('Mass',M,'RelTol',1e-4,'AbsTol',[1e-6 1e-10 1e-6]);
 % [t,y] = ode15s(@bounaryinv_infBus,tspan,y0,options);
 
-%[t,x] = ode15s(@(t,x)ode_full_system_modular(t,x,param), tspan, x0, options);
+[t,x] = ode15s(@(t,x)ode_full_system_modular(t,x,param), tspan, x00, options);
 
 % use fsolve to solve PF and initialize
 % use ODE23t or 15s to run dyn sim
