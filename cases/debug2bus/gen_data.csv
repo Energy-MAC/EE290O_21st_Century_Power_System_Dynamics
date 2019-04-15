@@ -1,0 +1,2 @@
+GenName,BusNumber,Resistance [pu],Inductance [pu],MutualInductance [pu],Inertia [MWs/MVA],Damping [pu]
+Gen1,1,0.0031,1.05,1,5.148,2
