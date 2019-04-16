@@ -1,8 +1,17 @@
-function f = vsm_inertia(iod, vod, ioq, voq, vpll_d, vpll_q, epsilon_pll, delta_w_vsm, params)
+function f = vsm_inertia(x, y, params)
 %%%%%%%%%%%%%%%%
 % Equations (4) and (5) from D'Arco et al reference
 %%%%%%%%%%%%%
 
+    delta_w_vsm = x(1);
+    iod = y(1);
+    vod = y(2); 
+    ioq = y(3);
+    voq = y(4);
+    vpll_d = y(5);
+    vpll_q = y(6);
+    epsilon_pll = y(7);
+    
     %get parameters
     Ta = params.Ta;
     kd = params.kd;

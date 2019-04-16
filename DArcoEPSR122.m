@@ -6,7 +6,7 @@ parameters
 
 %% Set- up DAE Solver 
 options_dae = optimoptions('fsolve','Algorithm','trust-region-dogleg','StepTolerance', 1e-8,'FunctionTolerance', 1e-8,'MaxFunctionEvaluations',500000, 'MaxIterations',100000,'StepTolerance',1e-8,'OptimalityTolerance', 1e-8);
-x00 = fsolve(@(x)inverter_infinite_bus(0,x,inverter_params),x0,options_dae);
+x00 = fsolve(@(x)DAIIB(0,x,inverter_params),x0,options_dae);
 
 opts = odeset('RelTol',1e-8,'AbsTol',1e-8);%'Mass',M);
 
@@ -15,10 +15,10 @@ opts = odeset('RelTol',1e-8,'AbsTol',1e-8);%'Mass',M);
 % Specific time varying statements can be defined at the bottom of the
 % script.
 inverter_params.tvar_fun = @p_ref_step;
-[t4_1,y4_1] = ode23t(@(t,x)inverter_infinite_bus(t,x,inverter_params), [0:0.01:4], x00', opts);
+[t4_1,y4_1] = ode23t(@(t,x)DAIIB(t,x,inverter_params), [0:0.01:4], x00', opts);
 
 inverter_params.tvar_fun = @wg_ramp;
-[t4_2,y4_2] = ode23t(@(t,x)inverter_infinite_bus(t,x,inverter_params), [0:0.01:4], x00', opts);
+[t4_2,y4_2] = ode23t(@(t,x)DAIIB(t,x,inverter_params), [0:0.01:4], x00', opts);
 
 %Figure 8: Plot power during step response. p = vod*iod+voq*ioq
 figure(8);
