@@ -1,5 +1,16 @@
-function f = PLL(vpll_d, vpll_q, vod, voq, delta_theta_pll, epsilon_pll, delta_theta_vsm, params)
+function f = PLL(x,y, params)
 
+
+    vpll_d = x(1); 
+    vpll_q = x(2);
+    epsilon_pll = x(3);
+    delta_theta_pll = x(4);
+    
+    vod = y(1);
+    voq = y(2);
+    delta_theta_vsm = y(3);
+    
+    
    %get parameters
    
     wlp = params.wlp; % PLL filter in rad/s

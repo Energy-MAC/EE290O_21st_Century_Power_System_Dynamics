@@ -1,21 +1,21 @@
 %% SynchMachine Parameters
-gen.Xg=0.25;
-gen.M=0.1;    
-gen.D=0.1;  
-gen.Pd=0.9;
-gen.V0=1.1;
+gen_params.Xg=0.25;
+gen_params.M=0.1;    
+gen_params.D=0.1;  
+gen_params.Pd=0.9;
+gen_params.V0=1.1;
 
-AVR.Kv=10; 
-AVR.E0=1; 
-AVR.V_sp=1;
+AVR_params.Kv=10; 
+AVR_params.E0=1; 
+AVR_params.V_sp=1;
 
 %% Inf bus parameters 
-infbus.Xth = 0.25;
-infbus.V_inf = 1.0;
-infbus.Theta_inf = 0.0;
+infbus_params.Xth = 0.25;
+infbus_params.V_inf = 1.0;
+infbus_params.Theta_inf = 0.0;
 
-%%Line parameters 
-line.Xl = 0.5;
+%% Line parameters 
+line_params.Xl = 0.5;
 
 %% Inverter Parameters
 %VSM Parameters

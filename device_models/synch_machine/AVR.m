@@ -1,7 +1,7 @@
-function [vars] = AVR(x, params)
+function [vars] = AVR(x, y, params)
         
-    V_g = x(1);
-    E = x(2);
+    E = x(1);
+    V_g = y(1);
     
     %get parameters
     V_sp = params.V_sp;
@@ -11,7 +11,7 @@ function [vars] = AVR(x, params)
     dEdt =  Kv*(V_sp - V_g);
     
     if E==0  
-        dEdt=0 
+        dEdt=0; 
     end
 
     vars = dEdt;

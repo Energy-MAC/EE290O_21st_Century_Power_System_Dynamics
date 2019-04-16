@@ -1,4 +1,20 @@
-function f = current_control(iod, vod, ioq, voq, icvd, icvq, phi_d, phi_q, xi_d, xi_q, qm, delta_theta_vsm, delta_w_vsm, params)
+function f = current_control(x,y, params)
+
+
+    iod = x(1);
+    ioq = x(2);  
+    phi_d = x(3);
+    phi_q = x(4);
+    
+    vod = y(1); 
+    voq = y(2); 
+    icvd = y(3); 
+    icvq = y(4);   
+    xi_d = y(5); 
+    xi_q = y(6);
+    qm = y(7); 
+    delta_theta_vsm = y(8); 
+    delta_w_vsm = y(9); 
 
  %get parameters
  

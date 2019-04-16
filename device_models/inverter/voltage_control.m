@@ -1,4 +1,21 @@
-function f = voltage_control(iod, vod, ioq, voq, icvd, icvq, phi_d, phi_q, xi_d, xi_q, gamma_d, gamma_q, qm, delta_w_vsm, params)
+function f = voltage_control(x,y, params)
+
+
+    vod = x(1);
+    voq = x(2);
+    icvd = x(3);
+    icvq = x(4);
+    xi_d = x(5);
+    xi_q = x(6);
+
+    iod = y(1);      
+    ioq = y(2);       
+    phi_d = y(3);      
+    phi_q = y(4);      
+    gamma_d = y(5);      
+    gamma_q = y(6);      
+    qm = y(7);      
+    delta_w_vsm = y(8);      
 
 %get parameters
 

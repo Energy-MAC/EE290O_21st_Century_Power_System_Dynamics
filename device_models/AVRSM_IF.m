@@ -1,20 +1,17 @@
 function [vars] = AVRSM_IF(t, x, machine_params, AVR_params, line_params, infbus_params)
 
-    
- 
-
     %Synch Generator and AVR
     E = x(1);
     d = x(2);
     w = x(3);
-    Qg =x(4);
-    theta = x(5);
-    V_g = x(6);
-
+    theta = infbus_params.Theta_inf;
+    V_g = infbus_params.V_inf;
+    lp = line_params;
     
-    vars = [generator([E, d, w], [Qg, theta, V_g], machine_params);
-            AVR([V_g, E], AVR_params);
-            pf_eqs([Qg, theta], V_g, machine_params, line_params, infbus_params)];
+    
+    
+    vars = [generator([w, d], [E, theta, V_g], machine_params);
+            AVR(E, V_g, AVR_params)];
 
         
 end
