@@ -1,10 +1,11 @@
 clear
 clc
+close all
 %% Load data
-case_name = 'example_3bus';
+case_name = 'example_2bus';
 [Mat_lines,Mat_buses] = load_network(case_name);
 Mat_loads = load_load_impedance(case_name);
-Mat_gens = csvread('cases/example_3bus/gen_data.csv', 1,1);
+Mat_gens = csvread('cases/example_2bus/gen_data.csv', 1,1);
 % Mat_convs = csvread('cases/example_3bus/conv_data.csv', 1,1);
 
 
@@ -110,6 +111,8 @@ for i=1:loads_size %For each load
         + j*omega0*L_loads(2*i-1:2*i, 2*i-1:2*i); %Impedance matrix (dq) of load i
     I_inc_loads(2*bus_number-1:2*bus_number, 2*i-1:2*i) = eye(2); % Incidence of load i connected to bus_number
 end
+Z_loads = 0.01*Z_loads;
+L_loads = 0.05*L_loads
 inv_L_loads = pinv(L_loads); %Compute inverse of L
 
 %Construct Gen Matrices
@@ -159,6 +162,7 @@ inv_M_gens = pinv(M_gens); %Compute inverse of M
 
 
 %% -- Define a parameter struct to handle all the data -- %%
+
 
 %Base data
 param.omega0 = omega0;
@@ -274,24 +278,63 @@ param_limits.i_f_end = param_limits.i_f_init + i_f_size -1;
 
 
 %% Solve differential equation
-
-tspan = [0,0.6];
+close all
+tspan = [0,3];
 %x0 = 0.01*ones(num_variables, 1); %initial condition
-x0 = [ 0.5; 0.5; 0.5; 0.5; %i_gen
-    0.5; 0.5; 0.5; 0.5; 0.5; 0.5; %i_load
-    0.1; 0.1; 0.1; 0.1; 0.1; 0.1; %i_line
-    1; 1; 1; 1; 1; 1; %v_buses
-    0.2; 0.3;  %theta_gen
-    1; 1]; %omega_gen
+x0 = [ 0; -1; %i_gen
+    0; 0; %i_load
+    0; -1; %i_line
+    0; 1; 0; 1; %v_buses
+    0;  %theta_gen
+    1]; %omega_gen
 u = zeros(num_inputs, 1);
-u = [1.2; 1.1; ... % tau_m
-    1; 1]; % i_f 
+u = [1; ... % tau_m
+    1]; % i_f 
 Mass_Matrix = eye(num_variables);
+for i=1:10
+    Mass_Matrix(i,i) = 0;
+end
 options = odeset('Mass', Mass_Matrix);
 
-%Solve differential equation system. You can pass parameters to the
+
+
+%% Obtain initial conditions
+%options = optimoptions('fsolve','MaxFunctionEvaluations',10, 'MaxIterations', 10);
+%x0 = randn(12,1);
+%x_init = fsolve(@(x) ode_init_cond(x,u,param,param_limits),x0,options);
+%x_init
+
+%% Solve differential equation system. You can pass parameters to the
 %function using this technique
 [t,x] = ode15s(@(t,x)ode_full_system_modular(t,x,u,param, param_limits), tspan, x0, options);
 %[t,x] = ode23t(@(t,x)ode_full_system_modular(t,x,u,param, param_limits), tspan, x0);
 
-plot(t,x)
+fig1 = figure()
+plot(t,x(:, 1:2))
+legend('i_{g,d}', 'i_{g,q}')
+title('Generator currents i_g')
+
+fig2 = figure()
+plot(t,x(:, 3:4))
+legend('i_{l,d}', 'i_{l,q}')
+title('Load currents i_l')
+
+fig3 = figure()
+plot(t,x(:, 5:6))
+legend('i_{t,d}', 'i_{t,q}')
+title('Line currents i_t')
+
+fig4 = figure()
+plot(t,x(:, 7:10))
+legend('v_{1,d}', 'v_{1,q}','v_{2,d}', 'v_{2,q}')
+title('Voltages')
+
+fig5 = figure()
+plot(t,x(:, 11))
+legend('\theta')
+title('Generator angle')
+
+fig6 = figure()
+plot(t,x(:, 12))
+legend('\omega')
+title('Generator rotor velocity')

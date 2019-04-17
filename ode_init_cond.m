@@ -1,4 +1,4 @@
-function dxdt = ode_full_system_modular(t,x, u, param, pl)
+function dxdt = ode_init_cond(x, u, param, pl)
 
 % this function returns the whole differential equation system of Curi
 % paper in a modular fashion
@@ -94,4 +94,4 @@ dxdt = [
     diff_i_lines;
     diff_v_buses;
     diff_theta_gens;
-    diff_omega_gens]; %diff_vdc_convs
+    diff_omega_gens] %diff_vdc_convs
