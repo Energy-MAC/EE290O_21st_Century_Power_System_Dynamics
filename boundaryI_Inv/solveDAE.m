@@ -8,31 +8,53 @@ clc; close all; clear all;
 parameters % call the parameters.m to set populate workspace
 % after calling, workspace will have "inverter_params" and x0 vars
 
-
 %%
 options_dae = optimoptions('fsolve','Algorithm','trust-region-dogleg','StepTolerance', 1e-8,'FunctionTolerance', 1e-8,'MaxFunctionEvaluations',500000, 'MaxIterations',100000,'StepTolerance',1e-8,'OptimalityTolerance', 1e-8);
-x00 = fsolve(@(x)bound_infSimple(x,inverter_params),x0);
 
+ stateLabel='Vterm Vterm_theta Iqterm Ipterm Pline Qline';
+ x00_test2 = fsolve(@(x)bound_infSimple(0,x,inverter_params),x0_test2);
 
+ stateLabel='x_QVdroop x_QVdroop x_QVdroop Qcmd I_ctrl I_ctrl Ipcmd Iqcmd x_phys x_phys Iqterm Ipterm Pline Qline Vterm Vterm_theta Vref';
+x00_test1 = fsolve(@(x)boundaryinv_infBus(0,x,inverter_params),x0_test1);
 
+ printmat([x0_test1 x00_test1], 'Init States', stateLabel,'x0 x00_test1')
+ printmat([x0_test2 x00_test2], 'Init States', stateLabel,'x0 x00_test2')
 
-%% Setup DAE init and mass matrix
+%% Bus inf simple DAE
+n=6;
+M=eye(n);
+M(5,5)=0; M(6,6)=0;
+tspan = [0 1];
+ options = odeset('Mass',M,'RelTol',1e-4,'AbsTol',1e-6);
+ [t,y] = ode15s(@(t,x)bound_infSimple(t,x,inverter_params),tspan,x00_test2,options);
+
+ %% plot Bus inf simple results
+figure; 
+subplot(3,1,1);
+plot(t,y(:,5),t,y(:,6),'LineWidth',2); legend('Pline','Qline');
+subplot(3,1,2);
+plot(t,y(:,3),t,y(:,4),'LineWidth',2); legend('Ipterm','Iqterm');
+subplot(3,1,3);
+plot(t,y(:,1),t,y(:,2),'LineWidth',2); legend('Vterm','Vterm_theta');
+
+%% Bound I DAE
+n=17;
+M=eye(n);
+M(7,7)=0; M(11,11)=0; M(12,12)=0; M(13,13)=0; M(14,14)=0;
+tspan = [0 1];
+ options = odeset('Mass',M,'RelTol',1e-4,'AbsTol',1e-6);
+ [t,y] = ode15s(@(t,x)boundaryinv_infBus(t,x,inverter_params),tspan,x00_test1,options);
+
+ %% plot Bound I DAE results
+figure; 
+subplot(3,1,1);
+plot(t,y(:,13),t,y(:,14),'LineWidth',2); legend('Pline','Qline');
+subplot(3,1,2);
+plot(t,y(:,11),t,y(:,12),'LineWidth',2); legend('Ipterm','Iqterm');
+subplot(3,1,3);
+plot(t,y(:,15),t,y(:,16),'LineWidth',2); legend('Vterm','Vterm_theta'); 
+
+%% TIPS
 % refernce for mass matrix: https://www.mathworks.com/help/matlab/math/solve-differential-algebraic-equations-daes.html
-% have not run this yet, still fixing up
-y0 = [1; 0; 0];
-tspan = [0 4*logspace(-6,6)];
-M=eye(14); % mass matrix to define which eqs are diff vs. alg eqs
-M(7,7)=0; % alg eq, QVdroop
-M(10,10)=0; % alg eq, current control
-M(11,11)=0; % alg eq, current control
-M(12,12)=0; % alg eq, inf bus network
-M(13,13)=0; % alg eq, inf bus network
-M(14,14)=0; % alg eq, inf bus network
-%%
-% options = odeset('Mass',M,'RelTol',1e-4,'AbsTol',[1e-6 1e-10 1e-6]);
-% [t,y] = ode15s(@bounaryinv_infBus,tspan,y0,options);
-
-[t,x] = ode15s(@(t,x)ode_full_system_modular(t,x,param), tspan, x00, options);
-
 % use fsolve to solve PF and initialize
 % use ODE23t or 15s to run dyn sim

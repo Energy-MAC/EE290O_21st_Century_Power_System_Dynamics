@@ -9,29 +9,27 @@
 
 % Table 2-1 overallInverter rating
 % Use for load flow, which initializes dynamic sim
-inverter_params.Pmax=700; % kW
-inverter_params.Pmin=0; % kW
-inverter_params.Qmax=99 % kVar, for 0.99 pow factor
-inverter_params.Qmin=-99 % kVar
-inverter_params.Vref=480; % V
-inverter_params.Vmeas=480; % TEMP
-inverter_params.Pord=500 % arbitrary, user-written solar pow profile
+% inverter_params.Pmax=700; % kW
+% inverter_params.Pmin=0; % kW
+% inverter_params.Qmax=99 % kVar, for 0.99 pow factor
+% inverter_params.Qmin=-99 % kVar
+inverter_params.Pord=500; % arbitrary, user-written solar pow profile
 
 
 % QV droop
-inverter_params.Tr=0.02 % sec, vmeas lag
-inverter_params.Tv=0.05 % sec
-inverter_params.Tc=0.15 % sec, cycle time + comm delay + control filtering
-inverter_params.Vfrz=0.7 % not used for now
-inverter_params.Kpv=18 % QVdroop coeff, prop
-inverter_params.Kiv=5
-inverter_params.Qmax=0.14 % pu
-inverter_params.Qmin=-0.14 % pu
-inverter_params.Tpwr=0.05 % sec, unsure what this is used for
+inverter_params.Tr=0.02; % sec, vmeas lag
+inverter_params.Tv=0.05; % sec
+inverter_params.Tc=0.15; % sec, cycle time + comm delay + control filtering
+inverter_params.Vfrz=0.7; % not used for now
+inverter_params.Kpv=18; % QVdroop coeff, prop
+inverter_params.Kiv=5;
+inverter_params.Qmax=0.14; % pu
+inverter_params.Qmin=-0.14; % pu
+inverter_params.Tpwr=0.05; % sec, unsure what this is used for
 
 % Current control
-inverter_params.Kqi=0.1
-inverter_params.Kvi=120
+inverter_params.Kqi=0.1;
+inverter_params.Kvi=120;
 % Sat block:
 % Vmax=1.1
 % Vmin=0.9
@@ -42,19 +40,26 @@ inverter_params.Kvi=120
 % Ipmax=
 
 inverter_params.Tpwm=0.02 % for PWM switching
-inverter_params.Khv=1; %  fow now, 
-inverter_params.Klv=1; % for now, 
+inverter_params.Khv=1; %  fow now, not used
+inverter_params.Klv=1; % for now, not used
 %inverter_params.K_LPVL=
 
 % inf bus network
-inverter_params.Xe=0.1;
-inverter_params.ZL=0.1;
+inverter_params.Xe=0.05;
+inverter_params.ZL=0.05;
 inverter_params.Vinf=480;
 inverter_params.theta_inf=0;
 
- %x0=zeros(17,1) % TEMP
-% x0(4)=480; x0(6)=480;
+%-------------------------------------
+% Turn controller gains off:
+inverter_params.Kpv=0;
+inverter_params.Kiv=0;
+inverter_params.Kqi=0;
+inverter_params.Kvi=0;
 
-% Simple:
-x0=[480 0 0 0 0 0]';
+% boundaryinv_infBus
+ x0_test1=[480 0 480 0 0 480 repmat(0,1,8) 480 0 480]';
+
+%bound_infSimple
+x0_test2=[480 0 0 0 0 0]';
 

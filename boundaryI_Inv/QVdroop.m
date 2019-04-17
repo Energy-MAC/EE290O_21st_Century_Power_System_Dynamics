@@ -10,12 +10,12 @@ function f = QVdroop(x_QVdroop,Vterm, Vref,Qcmd,params)
 % -----------------------------------------------
 
 % Set parameters
-Tc=params.Tc % communications and actuation delay
-Tr=params.Tr % meas delay
-Tv=params.Tv % unsure
-Vfrz=params.Vfrz % ommitted for now, involves freezing the inverter if voltage gets too low, perhaps something like ant-windup action
-Kpv=params.Kpv % QVdroop coeff
-Kiv=params.Kiv % QV droop, integrator coeff
+Tc=params.Tc; % communications and actuation delay
+Tr=params.Tr; % meas delay
+Tv=params.Tv; % unsure
+Vfrz=params.Vfrz; % ommitted for now, involves freezing the inverter if voltage gets too low, perhaps something like ant-windup action
+Kpv=params.Kpv; % QVdroop coeff
+Kiv=params.Kiv; % QV droop, integrator coeff
 
 % % See handwritten work for derivation of state space form from GE PV
 % % inverter paper "Solar Photovoltaic (PV) Plant Models in PSLF"
@@ -32,9 +32,9 @@ Kiv=params.Kiv % QV droop, integrator coeff
 % % naming is needed for concatenation
 % mySys=ss(A,B,C,[],'InputName',{'dr_Vmeas','dr_Vref'},'OutputName',{'dr_Qcmd'});
 
-g1=x_QVdroop(1)
-g2=x_QVdroop(2)
-g3=x_QVdroop(3)
+g1=x_QVdroop(1);
+g2=x_QVdroop(2);
+g3=x_QVdroop(3);
 
 f=[
     %d(g1)/dt=

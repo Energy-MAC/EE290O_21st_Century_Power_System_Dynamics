@@ -1,8 +1,8 @@
 function f = infBusNwk(Ipterm,Iqterm,Vterm, Vterm_theta,Pline,Qline,params)
 % Params
- Ze=params.Xe
- ZL=params.ZL
- Vinf=params.Vinf
+ Ze=params.Xe;
+ ZL=params.ZL;
+ Vinf=params.Vinf;
  theta_inf = params.theta_inf;
 
 % NOTE: PHASOR REP DOESNT WORK
@@ -15,10 +15,12 @@ function f = infBusNwk(Ipterm,Iqterm,Vterm, Vterm_theta,Pline,Qline,params)
 %     Vg/ZL-I2;
 % ];
 
+% Traditional transmission line power flow equations
+% algebraic, nonlinear
 X=ZL+Ze;
 f=[    
     (Ipterm*Vterm)-Vterm*Vinf*sin(Vterm_theta-theta_inf)/X-Pline;
-    (Iqterm*Vterm)-Vterm^2/X-Vterm*Vinf*cos(Vterm_theta-theta_inf)/X-Qline;  
+    (Iqterm*Vterm)-(Vterm^2/X-Vterm*Vinf*cos(Vterm_theta-theta_inf)/X)-Qline;  
 ];
 end
 
