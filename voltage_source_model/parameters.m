@@ -24,12 +24,12 @@ inverter_params.Pcmd
 
 %limits
 %should set to limits as described on pg. 45 in rama thesis
-inverter_params.Pmax = 700; % kW
-inverter_params.Qmax = 99;  % kVar, for 0.99 power factor
-inverter_params.Qmin = -99; % kVar
+inverter_params.Pmax; % kW
+inverter_params.Qmax;  % kVar, for 0.99 power factor
+inverter_params.Qmin; % kVar
 
 %reference points
-inverter_params.Vref = 480; % V
+inverter_params.Vref % V
 inverter_params.Pref
 inverter_params.omega_s = 377;   % rad/s
 %QV droop (is this right?)
@@ -42,13 +42,13 @@ inverter_params.Rp
     %reactive power controller
 inverter_params.Ki
 inverter_params.Kp
-inverter_params.Kiq
+inverter_params.Kiq = 10.0; 
 inverter_params.Tr
 
     %real power controller
 inverter_params.Tfrq
 inverter_params.TGpv
-inverter_params.Kip
+inverter_params.Kip = 10.0;
 
 %outputs from power controller (inputs to inner current loop)
 inverter_params.Iqcmd
@@ -56,14 +56,14 @@ inverter_params.Ipcmd
 
 
 %Inner current loop - real and reactive
-inverter_params.Td
-inverter_params.Tq
+inverter_params.Td = 10e-3;     % sec
+inverter_params.Tq = 10e-3;     % sec
 inverter_params.Imax    %current limit
 
 
 %PWM stage
-inverter_params.Teq
-inverter_params.Ted
+inverter_params.Teq = 10e-3;    % sec
+inverter_params.Ted = 10e-3;    % sec
 
 inverter_params.Vdc
 inverter_params.VT
@@ -76,6 +76,8 @@ inverter_params.Xf
 inverter_params.Xe=0.1;
 inverter_params.ZL=0.1;
 inverter_params.Vinf=1000;
+inverter_params.theta_inf = 0;
+
 
 %need to set x0?
 

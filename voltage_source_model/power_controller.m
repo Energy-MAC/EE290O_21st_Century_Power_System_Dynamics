@@ -4,7 +4,10 @@
 %function dy = power_controller(x_pwr_ctrl, Vt,Qg,omega,Pactual,[Iqcmd,
 %Ipcmd], params)
 
-function dy = power_controller(t,y,flag,params)
+%states: x_pwr_ctrl, Vt, Qg, omega, Pactual
+
+
+function dy = power_controller(x_pwr_ctrl,Vt,Qg,omega,Pactual,params)
 % Inputs, outputs, and params of state space rep:
     % Reference parameters (might have to move Qmax, Pmax if calculating
     % it based on Vt: [Vref, Qmax, Qmin, Pref, Pmax]
@@ -27,21 +30,28 @@ Ki = params.Ki;
 Rq = params.Rq;
 Tr = params.Tr;
 Kiq = params.Kiq;
+Kip = params.Kip;
 Kp = params.Kp;
 TGpv = params.TGpv;
 omega_s = params.omega_s;
 Kip = params.Kip;
 
+%x_pwr_control is an array that holds the states s1 - s5 as written in the
+%Rama thesis
 s1 = x_pwr_ctrl(1);
 s2 = x_pwr_ctrl(2);
 s3 = x_pwr_ctrl(3);
 s4 = x_pwr_ctrl(4);
 s5 = x_pwr_ctrl(5);
 
+%pre-calculate Qcmd, Pcmd to populate array
+Qcmd = s1 + Kp*(Vref - s2 - Rq*Qg);
+Pcmd = s3;
 
 
 dy = [
     
+    %%% Differential equations:
     % Reactive power controller
     
     % ds1/dt = 
@@ -51,10 +61,9 @@ dy = [
     (1/Tr)*(Vt-s2);
     
     % ds5/dt = 
-    Kiq*((s1+Kp*(Vref-s2-Rq*Qg)) - Qg);
+    Kiq*(Qcmd - Qg);
     
-    
-    % Real power controller
+   % Real power controller
     
     % ds3/dt = 
     (1/TGpv)*(Pref - ((omega - omega_s)/Rp) - s3);
@@ -62,10 +71,13 @@ dy = [
     %ds4/dt = 
     Kip*(s3 - Pactual);  
     
+    %%% Algebraic equations: 
+    %0 = 
+    Qcmd/Vt + s5 - IQcmd;
+    
+    Pcmd/Vt + s4 - IPcmd;
+    
     ];
     
 end
 
-%non-differential eqns
-%     IQcmd = Qcmd/Vt + s5;
-%     IPcmd = Pcmd/Vt + s4;

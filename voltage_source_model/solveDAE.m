@@ -13,7 +13,9 @@ parameters; % call parameters.m to populate workspace
             % impedance parameters
 
 %%
-options_dae = optimoptions('fsolve','Algorithm','trust-region-dogleg','StepTolerance', 1e-8,'FunctionTolerance', 1e-8,'MaxFunctionEvaluations',500000, 'MaxIterations',100000,'StepTolerance',1e-8,'OptimalityTolerance', 1e-8);
+options_dae = optimoptions('fsolve','Algorithm','trust-region-dogleg','StepTolerance'...
+    , 1e-8,'FunctionTolerance', 1e-8,'MaxFunctionEvaluations',500000, 'MaxIterations'...
+    ,100000,'StepTolerance',1e-8,'OptimalityTolerance', 1e-8);
 %x00 = fsolve(@(x)bound_infSimple(x,inverter_params),x0,options_dae);
 
 %% Set up DAE initialization and mass matrix
