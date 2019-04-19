@@ -39,6 +39,11 @@ I_inc_gens = param.I_inc_gens;
 % Zac_convs = param.Zac_convs;
 % I_inc_convs = param.I_inc_convs;
 
+%Inf Bus
+Z_infbus = param.Z_infbus;
+I_inc_infbus = param.I_inc_infbus;
+V_infbus = param.V_infbus;
+
 
 %% Some auxiliary variables that will be useful
 num_gens = size(inv_M_gens, 1);
@@ -54,6 +59,7 @@ i_gens = x(pl.i_gens_init : pl.i_gens_end);
 % iac_convs = x(pl.iac_conv_init: pl.i_gens_size + 1 +
 i_loads = x(pl.i_loads_init : pl.i_loads_end);
 i_lines = x(pl.i_lines_init : pl.i_lines_end);
+i_infbus = x(pl.i_infbus_init : pl.i_infbus_end);
 v_buses = x(pl.v_buses_init : pl.v_buses_end);
 theta_gens = x(pl.theta_gens_init : pl.theta_gens_end);
 omega_gens = x(pl.omega_gens_init : pl.omega_gens_end);
@@ -67,17 +73,21 @@ i_f_gens = u(pl.i_f_init : pl.i_f_end);
 
 %% Compute the derivatives using auxiliary functions
 
-diff_i_gens = di_gens_dt(i_gens, v_buses, theta_gens, omega_gens, i_f_gens, inv_L_gens, Z_gens, I_inc_gens,  Ell_gens); %Eq (4c)
+diff_i_gens = di_gens_dt(i_gens, v_buses, theta_gens, omega_gens, i_f_gens, Z_gens, I_inc_gens,  Ell_gens); %Eq (4c)
 
 %diff_i_convs = di_convs_dt(v_buses, iac_convs, vdc_convs, Zac_convs, inv_Lac_convs, I_inc_convs);
 
-diff_i_loads = di_loads_dt(v_buses, i_loads, inv_L_loads, Z_loads, I_inc_loads); %Eq (10)
+diff_i_loads = di_loads_dt(v_buses, i_loads, Z_loads, I_inc_loads); %Eq (10)
+%diff_i_loads = 0*diff_i_loads; %Eq (10)
 
-diff_i_lines = di_lines_dt(v_buses, i_lines, inv_L_lines, Z_lines, E_inc); %Eq (2) Curi Paper
+diff_i_lines = di_lines_dt(v_buses, i_lines, Z_lines, E_inc); %Eq (2) Curi Paper
 
-i_in = -I_inc_gens*i_gens - I_inc_loads*i_loads; %Port variables w/o converter
-% i_in = I_inc_gens*i_gens - I_inc_loads*i_loads + I_inc_convs*iac_convs;
-diff_v_buses = dv_buses_dt(v_buses, i_lines, inv_C_buses, Y_buses, E_inc, i_in); %Eq (3) Curi Paper
+diff_i_infbus = di_infbus_dt(v_buses, i_infbus, V_infbus, Z_infbus, I_inc_infbus);
+
+i_in = -I_inc_gens*i_gens - I_inc_loads*i_loads - I_inc_infbus*i_infbus; %Port variables w/o converter
+%i_in = -I_inc_gens*i_gens  - I_inc_infbus*i_infbus;
+%%% i_in = I_inc_gens*i_gens - I_inc_loads*i_loads + I_inc_convs*iac_convs;
+diff_v_buses = dv_buses_dt(v_buses, i_lines, Y_buses, E_inc, i_in); %Eq (3) Curi Paper
 
 diff_theta_gens = dtheta_gens_dt(omega_gens, omega0); %Eq (4a) Curi
 
@@ -92,6 +102,7 @@ dxdt = [
     diff_i_gens; % diff_i_convs;
     diff_i_loads;
     diff_i_lines;
+    diff_i_infbus;
     diff_v_buses;
     diff_theta_gens;
-    diff_omega_gens] %diff_vdc_convs
+    diff_omega_gens]; %diff_vdc_convs

@@ -1,0 +1,2 @@
+InfBusName,BusNumber,Resistance [pu],Inductance [pu],V_d,V_q
+InfBus1,1,0.00031,1.33E-03,1,0
