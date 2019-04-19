@@ -1,4 +1,4 @@
-function dxdt = ode_full_system_modular(t,x, u, param, pl)
+function dxdt = ode_init_cond(x, u, param, pl)
 
 % this function returns the whole differential equation system of Curi
 % paper in a modular fashion
