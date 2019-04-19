@@ -1,4 +1,4 @@
-function [vars] = AVR(x, y, params)
+function AVR_ODE = AVR(t, x, y, params)
         
     E = x(1);
     V_g = y(1);
@@ -14,6 +14,6 @@ function [vars] = AVR(x, y, params)
         dEdt=0; 
     end
 
-    vars = dEdt;
+    AVR_ODE = dEdt;
 
 end

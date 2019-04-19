@@ -1,5 +1,5 @@
-function [vars] = generator(x, y, params)
-    
+function machine_ODE = sync_machine_2states(t, x, y, params)
+   
     w = x(1);
     d = x(2);
     
@@ -12,7 +12,7 @@ function [vars] = generator(x, y, params)
     D = params.D;
     Pd = params.Pd;
     Xg = params.Xg;
-    %if E<0, E=0; end
+    if E<0, E=0; end
     
     %Machine PowerFlow Equations
     vd = V_g*sin(d-theta); vq = V_g*cos(d-theta);
@@ -22,6 +22,6 @@ function [vars] = generator(x, y, params)
     dwdt = 1/M *(Pd - (vq*iq + vd*id) - D*w);
     dddt = w;
    
-   vars = [dwdt, dddt]'; 
+   machine_ODE = [dwdt, dddt]'; 
 
 end

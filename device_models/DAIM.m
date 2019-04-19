@@ -1,4 +1,4 @@
-function inverter_dxdt = DAIIB_extref(t,x,y,inverter_params)
+function inverter_ODE = DAIM(t,x,y,inverter_params)
 
     inverter_params = inverter_params.tvar_fun(t, inverter_params);
 
@@ -34,7 +34,7 @@ function inverter_dxdt = DAIIB_extref(t,x,y,inverter_params)
     % RPD Variable
     qm=x(19);
     
-inverter_dxdt=[
+inverter_ODE=[
     vsm_inertia(delta_w_vsm, [iod, vod, ioq, voq, vpll_d, vpll_q, epsilon_pll], inverter_params);
     voltage_control([vod, voq, icvd, icvq, xi_d, xi_q], [iod, ioq,phi_d, phi_q, gamma_d, gamma_q, qm, delta_w_vsm], inverter_params);
     current_control_extref([iod, ioq,  phi_d, phi_q], [vod, voq,  icvd, icvq,  xi_d, xi_q, qm, delta_theta_vsm, delta_w_vsm, v_g, theta_g], inverter_params);

@@ -1,13 +1,13 @@
 %% SynchMachine Parameters
-gen_params.Xg=0.25;
-gen_params.M=0.1;    
-gen_params.D=0.1;  
-gen_params.Pd=0.9;
-gen_params.V0=1.1;
+machine_params.Xg=0.25;
+machine_params.M=2.14;    
+machine_params.D=1.5;  
+machine_params.Pd=0.6;
+machine_params.tvar_fun = @default;
 
 AVR_params.Kv=10; 
 AVR_params.E0=1; 
-AVR_params.V_sp=1;
+AVR_params.V_sp=1.05;
 
 %% Inf bus parameters 
 infbus_params.Xth = 0.25;
@@ -86,6 +86,6 @@ x0=[
     0.025       %19: qm               - Fig 11, D'Arco et al, EPSR 122 (2015), "SmartGrids"
     ];
 
-function inverter_params_out = default(t,inverter_params_in)
-    inverter_params_out = inverter_params_in;
+function params_out = default(t,params_in)
+    params_out = params_in;
 end

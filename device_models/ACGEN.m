@@ -1,19 +1,18 @@
-function [vars] = AVRSM_IF(t, x, machine_params, AVR_params, line_params, infbus_params)
+function generator_ODE = ACGEN(t, x, y, machine_params, AVR_params)
+
+    machine_params = machine_params.tvar_fun(t, machine_params);
 
     %Synch Generator and AVR
-    E = x(1);
+    w = x(1);   
     d = x(2);
-    w = x(3);
-    theta = infbus_params.Theta_inf;
-    V_g = infbus_params.V_inf;
-    lp = line_params;
+    E = x(3);
     
-    
-    
-    vars = [generator([w, d], [E, theta, V_g], machine_params);
-            AVR(E, V_g, AVR_params)];
+    V_g = y(1);
+    theta = y(2);
 
-        
+    generator_ODE = [sync_machine_2states(t, [w, d], [E, theta, V_g], machine_params);
+                     AVR(t, E, V_g, AVR_params)];
+
 end
 
 
