@@ -17,8 +17,8 @@ figure(1);
 plot(t,y(:,2));
 legend({'1-bus','\infty-bus'},'Location','east')
 axis([0 10 0.0 0.6]);
-title('\delta (with stepped p ref)');
-ylabel('p [pu]');
+title('(with stepped p ref)');
+ylabel('\delta');
 xlabel('Time [s]');
 
 options_fsolve = optimoptions('fsolve','Algorithm','trust-region-dogleg','StepTolerance', 1e-8,'FunctionTolerance', 1e-8,'MaxFunctionEvaluations',500000, 'MaxIterations',100000,'StepTolerance',1e-8,'OptimalityTolerance', 1e-8);
@@ -34,8 +34,8 @@ figure(2);
 plot(t_ib,(y_ib(:,2) - y_ib(:,5)));
 legend({'1-bus','\infty-bus'},'Location','east')
 axis([0 10 0.0 0.6]);
-title('\delta (with stepped p ref)');
-ylabel('p [pu]');
+title('(with stepped p ref)');
+ylabel('\delta');
 xlabel('Time [s]');
 
 

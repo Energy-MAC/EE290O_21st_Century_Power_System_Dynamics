@@ -1,4 +1,4 @@
-function f = current_control(x,y,params)
+function f = current_control_extref(x,y,params)
 
 
     iod = x(1);

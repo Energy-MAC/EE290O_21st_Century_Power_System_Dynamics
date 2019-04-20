@@ -7,7 +7,7 @@ parameters
 %% Set- up DAE Solver 
 options_dae = optimoptions('fsolve','Algorithm','trust-region-dogleg','StepTolerance', 1e-8,'FunctionTolerance', 1e-8,'MaxFunctionEvaluations',500000, 'MaxIterations',100000,'StepTolerance',1e-8,'OptimalityTolerance', 1e-8);
 x00_1bus = fsolve(@(x)DAIMIB(0,x,inverter_params,line_params, infbus_params),[x0,1,0],options_dae);
-x00 = fsolve(@(x)DAIM(0,x,[1.0, 0.0],inverter_params),x0,options_dae);
+x00 = fsolve(@(x)DAIM(0,x,[1.02, 0.00],inverter_params),x0,options_dae);
 
 %x00(20) = 1;
 %x00(21) = 0;
@@ -23,11 +23,11 @@ opts = odeset('RelTol',1e-8,'AbsTol',1e-8);%'Mass',M);
 % script.
 inverter_params.tvar_fun = @p_ref_step;
 [t4_1_ext,y4_1_ext] = ode23t(@(t,x)DAIMIB(t,x,inverter_params, line_params, infbus_params), [0:0.01:10], x00_1bus', opts_1bus);
-[t4_1,y4_1] = ode23t(@(t,x)DAIM(t,x,[1.0, 0.0],inverter_params), [0:0.01:10], x00', opts);
+[t4_1,y4_1] = ode23t(@(t,x)DAIM(t,x,[1.02, 0.00],inverter_params), [0:0.01:10], x00', opts);
 
 inverter_params.tvar_fun = @wg_ramp;
 [t4_2_ext,y4_2_ext] = ode23t(@(t,x)DAIMIB(t,x,inverter_params, line_params, infbus_params), [0:0.01:10], x00_1bus', opts_1bus);
-[t4_2,y4_2] = ode23t(@(t,x)DAIM(t,x,[1.0, 0.0],inverter_params), [0:0.01:10], x00', opts);
+[t4_2,y4_2] = ode23t(@(t,x)DAIM(t,x,[1.02, 0.00],inverter_params), [0:0.01:10], x00', opts);
 
 %Figure 8: Plot power during step response. p = vod*iod+voq*ioq
 figure(8);
