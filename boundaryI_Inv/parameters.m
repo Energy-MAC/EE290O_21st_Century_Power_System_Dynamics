@@ -45,8 +45,8 @@ inverter_params.Klv=1; % for now, not used
 %inverter_params.K_LPVL=
 
 % inf bus network
-inverter_params.Xe=0.05;
-inverter_params.ZL=0.05;
+inverter_params.Xe=0.5;
+inverter_params.ZL=0.5;
 inverter_params.Vinf=480;
 inverter_params.theta_inf=0;
 
@@ -58,8 +58,9 @@ inverter_params.Kqi=0;
 inverter_params.Kvi=0;
 
 % boundaryinv_infBus
+ %x0_test1=[480 0 480 0 0 480 repmat(0,1,8) 550 0 480]';
  x0_test1=[480 0 480 0 0 480 repmat(0,1,8) 480 0 480]';
 
 %bound_infSimple
-x0_test2=[480 0 0 0 0 0]';
-
+x0_test2=[550 0 0 0 0 0]';
+% Vt=550, Vinf=480, so expect power flow from inv to inf bus
