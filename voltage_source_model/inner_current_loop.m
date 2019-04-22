@@ -17,8 +17,8 @@ Td = params.Td;
 
 %x_inner_curr_loop is an array that holds the states s6 - s7 as written in the
 %Rama thesis
-s6 = x_inner_curr_loop(1);  % s6 = id
-s7 = x_inner_curr_loop(2);  % s7 = iq
+s6 = x_inner_curr_loop(1);  % s6 = iq
+s7 = x_inner_curr_loop(2);  % s7 = id
 
 dy = [
 

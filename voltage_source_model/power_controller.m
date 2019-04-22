@@ -7,7 +7,7 @@
 %states: x_pwr_ctrl, Vt, Qg, omega, Pactual
 
 
-function dy = power_controller(x_pwr_ctrl,Vt,Qg,omega,Pactual,params)
+function dy = power_controller(x_pwr_ctrl, Vt, Qg, omega, Pactual, Iqcmd, Ipcmd, Qcmd, Pcmd params)
 % Inputs, outputs, and params of state space rep:
     % Reference parameters (might have to move Qmax, Pmax if calculating
     % it based on Vt: [Vref, Qmax, Qmin, Pref, Pmax]
@@ -21,9 +21,10 @@ function dy = power_controller(x_pwr_ctrl,Vt,Qg,omega,Pactual,params)
 Vref = params.Vref; % Voltage reference
 Qmax = params.Qmax; % Max reactive power deliverable
 Qmin = params.Qmin; % Min reactive power deliverable
-Pref = params.Pref;
-Pmax = params.Pmax;
-%should calculate Qmax, Pmax based on Vt
+Pref = params.Pref; % Referene real power
+Pmax = params.Pmax; % Reference max power
+
+%TODO: calculate Qmax, Pmax based on Vt
 
 %get all other parameters
 Ki = params.Ki;
