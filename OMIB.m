@@ -54,7 +54,6 @@ opts = odeset('RelTol',1e-8,'AbsTol',1e-8,'Mass',M);
 figure(2);
 plot(t_ib,(y_ib(:,2)));
 legend({'1-bus','\infty-bus'},'Location','east')
-axis([0 10 0.0 0.6]);
 title('(with stepped p ref)');
 ylabel('\delta');
 xlabel('Time [s]');           
