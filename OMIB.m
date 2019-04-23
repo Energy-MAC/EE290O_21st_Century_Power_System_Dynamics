@@ -20,12 +20,12 @@ grid_vals =   [real(Ini_V_bus(2))
 
 % Set- up DAE Solver 
 options_fsolve = optimoptions('fsolve','StepTolerance', 1e-8,'FunctionTolerance', 1e-8,'MaxFunctionEvaluations',500000, 'MaxIterations',100000,'StepTolerance',1e-8,'OptimalityTolerance', 1e-8);
-x00 = fsolve(@(x)ACGEN(0, x, grid_vals(1:2), machine_params, AVR_params), [0.0, 0.15, 1.1], options_fsolve);
+x00 = fsolve(@(x)ACGEN(0, x, grid_vals, machine_params, AVR_params), [0.0, 0.15, 1.1], options_fsolve);
 
 
 machine_params.tvar_fun = @p_ref_step;
 opts = odeset('RelTol',1e-8,'AbsTol',1e-8);
-[t,y] = ode15s(@(t,x)ACGEN(t,x, grid_vals', machine_params, AVR_params), [0:0.01:10], x00', opts);
+[t,y] = ode15s(@(t,x)ACGEN(t,x, grid_vals, machine_params, AVR_params), [0:0.01:4], x00', opts);
  
 figure(1);
 plot(t,y(:,2));
@@ -49,15 +49,23 @@ M(4,4) = 0.0;
 M(5,5) = 0.0;
 machine_params.tvar_fun = @p_ref_step;
 opts = odeset('RelTol',1e-8,'AbsTol',1e-8,'Mass',M);
-[t_ib,y_ib] = ode15s(@(t,x)ACGENIB(t, x, machine_params,  AVR_params, line_params, infbus_params), [0:0.01:10], x00_ib', opts);
+[t_ib,y_ib] = ode15s(@(t,x)ACGENIB(t, x, machine_params,  AVR_params, line_params, infbus_params), [0:0.01:4], x00_ib', opts);
 
 figure(2);
 plot(t_ib,(y_ib(:,2)));
-legend({'1-bus','\infty-bus'},'Location','east')
+legend({'1-bus','With AVR'},'Location','east')
 title('(with stepped p ref)');
 ylabel('\delta');
 xlabel('Time [s]');           
            
+figure(3);
+plot(sqrt(y_ib(:,4).^2 + y_ib(:,5).^2))
+legend({'1-bus','\infty-bus'},'Location','east')
+title('(with stepped p ref)');
+ylabel('V_{term}');
+xlabel('Time [s]'); 
+
+
 function machine_params = p_ref_step(t,machine_params)
     if t<1
         machine_params.Pd = 0.6;
