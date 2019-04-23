@@ -1,14 +1,13 @@
 %% SynchMachine Parameters
-machine_params.Xd=0.2995;
+machine_params.Xd=0.6;
 machine_params.Xq=0.646;
-machine_params.M=5.148;    
+machine_params.H=5.148;    
 machine_params.D=2;  
 machine_params.Pd=0.6;
 machine_params.tvar_fun = @default;
 
-AVR_params.Kv=10; 
-AVR_params.E0=1; 
-AVR_params.V_sp=1.05;
+AVR_params.Kv = 200; 
+AVR_params.V_sp = 1.05;
 
 %% Inf bus parameters 
 infbus_params.Xth = 0.25;

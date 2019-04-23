@@ -18,7 +18,7 @@ function ACGENIB_DAE = ACGENIB(t, x, machine_params, AVR_params, line_params, in
     
     % DQ conversions
     id = (Emf - (V_tq*sin(d) + V_td*cos(d)))/machine_params.Xd; 
-    iq = (V_td*sin(d) - V_tq*cos(d))/machine_params.Xd;      
+    iq = (V_td*sin(d) - V_tq*cos(d))/machine_params.Xq;      
          
     ACGENIB_DAE = [ACGEN(t, [w, d, Emf], [V_td, V_tq], machine_params, AVR_params);
                    id*sin(d) + iq*cos(d) - real(I_bus(2));
