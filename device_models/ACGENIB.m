@@ -1,13 +1,27 @@
-function ACGENIB_ODE = ACGENIB(t, x, machine_params, AVR_params, line_params, infbus_params)
+function ACGENIB_DAE = ACGENIB(t, x, machine_params, AVR_params, line_params, infbus_params)
     w = x(1);   
     d = x(2);
-    E = x(3);
+    Emf = x(3);
     
-    V_g = x(4);
-    theta_g = x(5);
+    V_td = x(4);
+    V_tq = x(5);   
+ 
+    X = line_params.Xl + infbus_params.Xth;
+    Y = 1/(1j*X);
+
+    Ybus = [Y, -Y; -Y, Y];
     
-    Q_gen = (V_g^2/(machine_params.Xg) - E*V_g*cos(d-theta_g)/machine_params.Xg);
+    V_bus = [infbus_params.V_inf + 1j*0; 
+             V_td + 1j*V_tq];
     
-    ACGENIB_ODE = [ACGEN(t, [w, d, E], [V_g, theta_g], machine_params, AVR_params);
-                   pf_eq_IB(Q_gen, [V_g, theta_g], machine_params.Pd, line_params, infbus_params)];
+    I_bus = Ybus*V_bus;
+    
+    % DQ conversions
+    id = (Emf - (V_tq*sin(d) + V_td*cos(d)))/machine_params.Xd; 
+    iq = (V_td*sin(d) - V_tq*cos(d))/machine_params.Xd;      
+         
+    ACGENIB_DAE = [ACGEN(t, [w, d, Emf], [V_td, V_tq], machine_params, AVR_params);
+                   id*sin(d) + iq*cos(d) - real(I_bus(2));
+                   iq*sin(d) - id*cos(d) - imag(I_bus(2))];
+
 end              

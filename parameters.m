@@ -1,9 +1,8 @@
 %% SynchMachine Parameters
 machine_params.Xd=0.2995;
 machine_params.Xq=0.646;
-machine_params.Xg=0.2995;
 machine_params.M=5.148;    
-machine_params.D=2;   
+machine_params.D=2;  
 machine_params.Pd=0.6;
 machine_params.tvar_fun = @default;
 

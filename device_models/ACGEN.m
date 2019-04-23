@@ -5,13 +5,18 @@ function generator_ODE = ACGEN(t, x, y, machine_params, AVR_params)
     %Synch Generator and AVR
     w = x(1);   
     d = x(2);
-    E = x(3);
+    Emf = x(3);
     
-    V_g = y(1);
-    theta = y(2);
+    V_td = y(1);
+    V_tq = y(2); 
+    
+    ed = V_td*sin(d) - V_tq*cos(d);
+    eq = V_tq*sin(d) + V_td*cos(d);
+    id = (Emf - eq)/machine_params.Xd; 
+    iq = ed/machine_params.Xd;    
 
-    generator_ODE = [sync_machine_2states(t, [w, d], [E, theta, V_g], machine_params);
-                     AVR(t, E, V_g, AVR_params)];
+    generator_ODE = [sync_machine_2states(t, [w, d], [Emf, ed, eq, id, iq], machine_params);
+                     AVR(t, Emf, [V_td, V_tq], AVR_params)];
 
 end
 

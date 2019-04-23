@@ -3,25 +3,24 @@ function machine_ODE = sync_machine_2states(t, x, y, params)
     w = x(1);
     d = x(2);
     
-    E = y(1);
-    theta = y(2);     
-    V_g = y(3);
+    Emf = y(1);
+
+    ed = y(2);
+    eq = y(3);
+    
+    id = y(4);
+    iq = y(5);
     
     %get parameters
     M = params.M;
     D = params.D;
     Pd = params.Pd;
-    Xg = params.Xg;
-    if E<0, E=0; end
-    
-    %Machine PowerFlow Equations
-    vd = V_g*sin(d-theta); vq = V_g*cos(d-theta);
-    id = (E - vq)/Xg; iq = vd/Xg;
-   
+    if Emf<0, Emf=0; end
+
     %Machine Non-linear ODE's
-    dwdt = 1/M *(Pd - (vq*iq + vd*id) - D*w);
+    dwdt = (1/2*M) *(Pd - (eq*iq + ed*id) - D*w);
     dddt = w;
    
-   machine_ODE = [dwdt, dddt]'; 
+    machine_ODE = [dwdt, dddt]'; 
 
 end
