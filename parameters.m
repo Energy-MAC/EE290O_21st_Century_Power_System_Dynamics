@@ -1,15 +1,28 @@
 %% SynchMachine Parameters
-machine_params.Xd=0.2995;
+% Electrical Parameters
+machine_params.Xl=0.2396;
+machine_params.Xd=0.8979;
 machine_params.Xq=0.646;
-machine_params.Xg=0.2995;
-machine_params.M=5.148;    
-machine_params.D=2;   
+machine_params.Xd_p=0.2995;
+machine_params.Xq_p=0.646;
+machine_params.Xd_pp=0.23;
+machine_params.Xq_pp=0.4;
+machine_params.Ra=0.0031;
+
+machine_params.Td0_p=7.4;
+machine_params.Td0_pp=0.03;
+machine_params.Tq0_p=0.0;
+machine_params.Tq0_pp=0.033;
+
+% Mechanical Parameters
+machine_params.H=5.148;    
+machine_params.D=2;  
 machine_params.Pd=0.6;
 machine_params.tvar_fun = @default;
 
-AVR_params.Kv=10; 
-AVR_params.E0=1; 
-AVR_params.V_sp=1.05;
+
+AVR_params.Kv = 700; 
+AVR_params.V_sp = 1.05;
 
 %% Inf bus parameters 
 infbus_params.Xth = 0.25;
