@@ -1,33 +1,37 @@
-function machine_ODE = sync_machine_2states(t, x, y, machine_params)
-   
+function [machine_ODE, I_M] = sync_machine_2states(t, x, y, machine_params)
+    
+    machine_params = machine_params.tvar_fun(t, machine_params);
+    
     w = x(1);
     d = x(2);
     
-    Emf = y(1);
+    Emf_q = y(1);
 
-    V_td = y(2);
-    V_tq = y(3);
+    V_tR = y(2);
+    V_tI = y(3);
        
     %get parameters
     H = machine_params.H;
     D = machine_params.D;
     Pd = machine_params.Pd;
-    Xd = machine_params.Xd;
-    Xq = machine_params.Xq;
-    if Emf<0, Emf=0; end
+    Xd_p = machine_params.Xd_p;
+    %Xq_p = machine_params.Xq_p;
+    if Emf_q<0, Emf_q=0; end
     
-    ed = V_td*sin(d) - V_tq*cos(d);
-    eq = V_tq*sin(d) + V_td*cos(d);
-
-    id = (Emf - eq)/Xd; 
-    iq = ed/Xq;  
+    % DQ-DQ Conversion
+    V_dq = IR_dq(d)*[V_tR; V_tI]; 
     
-    Pe = (eq*iq + ed*id);
+    i_q = V_dq(1)/Xd_p;                  %15.36
+    i_d = (Emf_q - V_dq(2))/Xd_p;        %15.36
+    
+    Pe = (V_dq(2))*i_q + (V_dq(1))*i_d;    %15.35
     
     %Machine Non-linear ODE's
-    dwdt = (1/(2*H))*(Pd - Pe - D*(w-1));
-    dddt = 60*2*pi()*(w-1);
+    dwdt = (1/(2*H))*(Pd - Pe - D*(w-1)); %15.5
+    dddt = 60*2*pi()*(w-1);               %15.5   
    
     machine_ODE = [dwdt, dddt]'; 
+    
+    I_M = dq_IR(d)*[i_d; i_q];
 
 end
