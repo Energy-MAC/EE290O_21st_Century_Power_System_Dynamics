@@ -15,8 +15,8 @@ function f = current_control_extref(x,y,params)
     qm = y(7); 
     delta_theta_vsm = y(8); 
     delta_w_vsm = y(9); 
-    v_g = y(10);
-    theta_g = y(11);
+    vgd = y(10);
+    vgq = y(11);
     
  %get parameters
  
@@ -64,13 +64,13 @@ f = [
       wb*vod/lg-...
       wb*rg*iod/lg+...
       wb*wg*ioq-... 
-      wb*v_g*cos(delta_theta_vsm-theta_g)/lg; % Paper eqn error: should be (-) term
+      wb*vgd/lg; % Paper eqn error: should be (-) term
       
       %d(io,q)/dt = 
       wb*voq/lg-...
       wb*wg*iod-...
       wb*rg*ioq/lg+...
-      wb*v_g*sin(delta_theta_vsm-theta_g)/lg; 
+      wb*vgq/lg; 
 
       %d(phi_d)/dt= 
       wad*vod-wad*phi_d; 
