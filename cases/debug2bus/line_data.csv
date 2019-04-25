@@ -1,2 +1,2 @@
 LineName,Resistance [pu],Inductance [pu],SendingBus,ReceivingBus
-Line12,0.01938,0.05917,1,2
+Line12,0.01938,0.00015695,1,2
