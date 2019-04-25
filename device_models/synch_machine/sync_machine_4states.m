@@ -1,6 +1,6 @@
-function [machine_ODE] = sync_machine_4states(t, x, y, machine_params)
+function [machine_ODE, I_M] = sync_machine_4states(t, x, y, machine_params)
     
-    %machine_params = machine_params.tvar_fun(t, machine_params);
+    machine_params = machine_params.tvar_fun(t, machine_params);
 
     w = x(1);
     d = x(2);
@@ -8,7 +8,6 @@ function [machine_ODE] = sync_machine_4states(t, x, y, machine_params)
     ed_pp = x(4);
    
     Emf = y(1);
-
     V_tR = y(2);
     V_tI = y(3);
        
@@ -44,6 +43,6 @@ function [machine_ODE] = sync_machine_4states(t, x, y, machine_params)
    
     machine_ODE = [dwdt, dddt, deq_pdt, ded_ppdt]'; 
     
-    %I_M = dq_IR(d)*[i_d; i_q];
+    I_M = dq_IR(d)*[i_d; i_q];
 
 end
