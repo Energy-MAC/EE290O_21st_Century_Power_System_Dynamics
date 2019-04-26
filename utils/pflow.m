@@ -33,14 +33,16 @@ for k = S.Bus.PQList
     
     x(2*k -1) = S.Bus.Voltages(k);
     x(2*k) = S.Bus.Angles(k)/(180/pi());
+    
 end
 
 %Initial conditions for PV Buses 
 
 for k = S.Bus.PVList
     
-    x(2*k -1) = imag(S.Bus.Load(k))-imag(S.Bus.Generation(k));
+    x(2*k -1) = imag(S.Bus.Generation(k))-imag(S.Bus.Load(k));
     x(2*k)=S.Bus.Angles(k)/(180/pi());
+    
 end
 
 end

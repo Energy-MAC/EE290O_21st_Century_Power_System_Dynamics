@@ -18,18 +18,20 @@ machine_params.H=5.148;
 machine_params.D=2;  
 machine_params.Pd=0.4;
 machine_params.tvar_fun = @default;
+machine_params.MVABase = 615;
 
-
-AVR_params.Kv = 200; %Page 256
+AVR_params.Kv = 200; %Page 526
 AVR_params.V_sp = 1.05;
 
 %% Inf bus parameters 
-infbus_params.Xth = 0.25;
-infbus_params.V_inf = 1.0;
+S=readcf('OMIB.cf'); %This Function ONLY reads the information stored on the *cf file 
+infbus_params.Xth = 0.00;
+infbus_params.V_inf = S.Bus.Voltages(1);
 infbus_params.Theta_inf = 0.0;
+infbus_params.SystemBaseMVA = S.BaseMVA;
 
 %% Line parameters 
-line_params.Xl = 0.5;
+line_params.Xl = imag(S.Branch.Z);
 
 %% Inverter Parameters
 %VSM Parameters

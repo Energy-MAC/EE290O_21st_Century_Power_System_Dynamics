@@ -16,8 +16,9 @@ function ACGENIB_DAE = ACGENIB2(t, x, machine_params, AVR_params, line_params, i
     
     I_bus = Ybus*V_bus;   
   
-    [ACGEN_ode, IM] = ACGEN2(t, [w, d, Emf], [V_R, V_I], machine_params, AVR_params);
-         
+    [ACGEN_ode, I_Machine] = ACGEN2(t, [w, d, Emf], [V_R, V_I], machine_params, AVR_params);
+    IM = I_Machine./infbus_params.SystemBaseMVA;
+    
     ACGENIB_DAE = [ACGEN_ode;
                    IM(1) - real(I_bus(2));
                    IM(2) - imag(I_bus(2))];
