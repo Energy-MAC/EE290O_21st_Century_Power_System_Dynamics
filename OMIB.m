@@ -28,35 +28,35 @@ eq_p0  = V_dq_M(2) + machine_params.Xd_p*I_dq_M(1);                   %9.12
 ed_pp0 = V_dq_M(1) - machine_params.Xq_pp*I_dq_M(2);                  %9.12
 vf0 = eq_p0 + (machine_params.Xd - machine_params.Xd_p)*I_dq_M(1);    %9.12
 
-% %% Machine Model only. Model 2a Classical Model
-% options_fsolve = optimoptions('fsolve','StepTolerance', 1e-8,'FunctionTolerance', 1e-8,'MaxFunctionEvaluations',500000, 'MaxIterations',100000,'StepTolerance',1e-8,'OptimalityTolerance', 1e-8);           
-% x00_m2 = fsolve(@(x)sync_machine_2states(0, [1.0, x], [eq_p0, V_R, V_I], machine_params), d_0, options_fsolve);           
-% 
-% machine_params.tvar_fun = @p_ref_step;
-% opts = odeset('RelTol',1e-8,'AbsTol',1e-8);
-% [t_mm2,y_mm2] = ode15s(@(t,x)sync_machine_2states(t, x, [eq_p0, V_R, V_I], machine_params), [0:0.01:30], [1.0, x00_m2]', opts);
-%  
-% figure(1);
-% plot(t_mm2,y_mm2(:,2)); 
-% %axis([0 10 0.0 0.6]);
-% title('(\delta with stepped p_{ref} 0.6 - 0.7 p.u.)');
-% ylabel('\delta');
-% xlabel('Time [s]');
-% hold on;
-% 
-% options_fsolve = optimoptions('fsolve','StepTolerance', 1e-8,'FunctionTolerance', 1e-8,'MaxFunctionEvaluations',500000, 'MaxIterations',100000,'StepTolerance',1e-8,'OptimalityTolerance', 1e-8);           
-% x00_m4 = fsolve(@(x)sync_machine_4states(0, [1.0, x], [vf0, V_R, V_I], machine_params),  [d_0, eq_p0, ed_pp0], options_fsolve);           
-% 
-% machine_params.tvar_fun = @p_ref_step;
-% opts = odeset('RelTol',1e-8,'AbsTol',1e-8);
-% [t_mm4, y_mm4] = ode15s(@(t,x)sync_machine_4states(t, x, [vf0, V_R, V_I], machine_params), [0:0.01:30], [1.0, x00_m4]', opts);
-%  
-% plot(t_mm4,y_mm4(:,2));
-% title('(\delta with stepped p_{ref} 0.6 - 0.7 p.u.)');
-% ylabel('\delta');
-% xlabel('Time [s]');
-% legend('2-State Model 2.a','4-State 2-Axis Model 4.b')
-% hold off
+%% Machine Model only. Model 2a Classical Model
+options_fsolve = optimoptions('fsolve','StepTolerance', 1e-8,'FunctionTolerance', 1e-8,'MaxFunctionEvaluations',500000, 'MaxIterations',100000,'StepTolerance',1e-8,'OptimalityTolerance', 1e-8);           
+x00_m2 = fsolve(@(x)sync_machine_2states(0, [1.0, x], [eq_p0, V_R, V_I], machine_params), d_0, options_fsolve);           
+
+machine_params.tvar_fun = @p_ref_step;
+opts = odeset('RelTol',1e-8,'AbsTol',1e-8);
+[t_mm2,y_mm2] = ode15s(@(t,x)sync_machine_2states(t, x, [eq_p0, V_R, V_I], machine_params), [0:0.01:30], [1.0, x00_m2]', opts);
+ 
+figure(1);
+plot(t_mm2,y_mm2(:,2)); 
+%axis([0 10 0.0 0.6]);
+title('(\delta with stepped p_{ref} 0.6 - 0.7 p.u.)');
+ylabel('\delta');
+xlabel('Time [s]');
+hold on;
+
+options_fsolve = optimoptions('fsolve','StepTolerance', 1e-8,'FunctionTolerance', 1e-8,'MaxFunctionEvaluations',500000, 'MaxIterations',100000,'StepTolerance',1e-8,'OptimalityTolerance', 1e-8);           
+x00_m4 = fsolve(@(x)sync_machine_4states(0, [1.0, x], [vf0, V_R, V_I], machine_params),  [d_0, eq_p0, ed_pp0], options_fsolve);           
+
+machine_params.tvar_fun = @p_ref_step;
+opts = odeset('RelTol',1e-8,'AbsTol',1e-8);
+[t_mm4, y_mm4] = ode15s(@(t,x)sync_machine_4states(t, x, [vf0, V_R, V_I], machine_params), [0:0.01:30], [1.0, x00_m4]', opts);
+ 
+plot(t_mm4,y_mm4(:,2));
+title('(\delta with stepped p_{ref} 0.6 - 0.7 p.u.)');
+ylabel('\delta');
+xlabel('Time [s]');
+legend('2-State Model 2.a','4-State 2-Axis Model 4.b')
+hold off
 
 %% Models with AVR, fixed Terminal Voltage
 options_fsolve = optimoptions('fsolve','display', 'iter');           
