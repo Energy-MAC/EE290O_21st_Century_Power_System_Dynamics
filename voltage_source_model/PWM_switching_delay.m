@@ -16,7 +16,7 @@ Ted = params.Ted;
 Teq = params.Teq;
 
 s8 = x_pwm_sw(1);  % s8 = delayed Eq
-s9 = x_pwm_sw(2);  % s7 = delayed Ed
+s9 = x_pwm_sw(2);  % s9 = delayed Ed
 
 
 dy = [

@@ -3,11 +3,11 @@
 
 
 
-function dy = inner_current_loop(x_inner_curr_loop, Iqcmd, Ipcmd, params)
+function dy = inner_current_loop(x_inner_curr_loop, IQcmd, IPcmd, params)
 % Inputs, outputs, and params of state space rep:
-    % Inputs: [Iqcmd,Ipcmd] (from power_controller) 
-    % States: s6, s7 (see Rama thesis) -> in vector x_inner_curr_loop
-    % Outputs: [s6, s7] = [id, iq]
+    % Inputs: [IQcmd,IPcmd] (from power_controller) 
+    % Intermediate States:
+    % Outputs: [s6, s7] (in x_inner_curr_loop) = [id, iq]
    
 % -----------------------------------------------
 
@@ -22,11 +22,11 @@ s7 = x_inner_curr_loop(2);  % s7 = id
 
 dy = [
 
-%%% Differential equations: 
-%ds6/dt =
-(1/Tq)*(Iqcmd - s6)         % should this be -Iqcmd as in appendix b of rama thesis
+    %%% Differential equations: 
+    % ds6/dt =
+    (1/Tq)*(IQcmd - s6);         % should this be -Iqcmd as in appendix b of Rama thesis
 
-%ds7/dt =
-(1/Td)*(Ipcmd - s7)
+    % ds7/dt =
+    (1/Td)*(IPcmd - s7);
 
 ];

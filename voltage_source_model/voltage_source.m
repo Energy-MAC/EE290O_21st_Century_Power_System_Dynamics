@@ -6,7 +6,7 @@
 function dy = voltage_source(x_inner_curr_loop, Ed, Eq, params)
 % Inputs, outputs, and params of state space rep:
     % Inputs: [iq, id] (from inner_current_loop) 
-    % States: 
+    % Intermediate states: 
     % Outputs: Ed, Eq
    
 % -----------------------------------------------

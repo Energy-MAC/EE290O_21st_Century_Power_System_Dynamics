@@ -17,17 +17,27 @@ Ts = 0.05;  % time step size
 %% Converter Model with Infinite Bus 
 
 % Use fsolve to initialize states
-stateLabel_inv_infbus = 's1 s2 s3 s4 s5 s6(iq) s7(id) s8 s9 Vt Qg omega Pactual Qcmd Pcmd Iqcmd Ipcmd Ed Eq';
+stateLabel_inv_infbus = 's1 s2 s3 s4 s5 IQcmd IPcmd s6(iq) s7(id) Ed Eq s8 s9 Vt Qg omega Pactual'; %order of states
 x00_inv_infbus = fsolve(@(x)VoltageSource_InfBus(0,x,inverter_params),x0_inv_infbus);
 printmat([x0_inv_infbus x00_inv_infbus], 'Initial States', stateLabel_inv_infbus, 'x0 x00')
 
 % Set up Mass Matrix to solve DAE
 % Should have 1's corresponding to diff eqs, 0 corresponding to alg eqns
-n = 19;     % number of states (in x)
+n = 17;     % number of states (in x)
 M = eye(n);
-%M(1,1) - M(9,9) -> ds1/dt - ds9/dt -> 1
+% M(1,1) - M(5,5) -> ds1/dt - ds5/dt -> 1
+M(6,6) = 0;     %IQcmd
+M(7,7) = 0;     %IPcmd
+% M(8,8) - M(9,9) -> ds6/dt - ds7/dt -> 1
+M(10,10) = 0;   % Ed
+M(11,11) = 0;   % Eq
+% M(12,12) - M(13,13) -> ds8/dt - ds9/dt -> 1
 
-
+%???? - Are these alg eqns? 
+M(14,14) = 0;   % Vt
+M(15,15) = 0;   % Qg
+M(16,16) = 0;   % omega
+M(17,17) = 0;   % Pactual
 
 % Set up time span vector
 tspan = 0:Ts:1;
