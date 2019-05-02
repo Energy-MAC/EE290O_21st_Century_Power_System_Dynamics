@@ -49,7 +49,7 @@ inverter_dxdt = [
     % 0 diff eqns
     % 2 alg eqns: Ed, Eq
     % 4 variables: s6, s7, Ed, Eq
-    voltage_source(x_inner_curr_loop, Ed, Eq, Pactual, Qg, params);
+    voltage_source(x_inner_curr_loop, Ed, Eq, Pactual, Qg, Vt, theta_conv, params);
     
     %PWM Switching Delay - generates s8 and s9
     % 2 diff eqns: ds8/dt, ds9/dt

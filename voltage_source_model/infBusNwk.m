@@ -15,7 +15,7 @@ f=[
     Pactual - (Vt*Vinf*sin(theta_conv - theta_inf))/X - Pline;
     
     % 0 = 
-    Qg -(Vt^2/X - Vt*Vinf*cos(theta_conv - theta_inf)/X) - Qline;
+    Qg - (Vt^2/X - Vt*Vinf*cos(theta_conv - theta_inf)/X) - Qline;
     
     % dtheta_conv/dt =
     omega;

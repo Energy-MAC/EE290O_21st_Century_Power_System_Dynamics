@@ -17,13 +17,19 @@ Ts = 0.05;  % time step size
 %% Converter Model with Infinite Bus 
 
 % Use fsolve to initialize states
-stateLabel_inv_infbus = 's1 s2 s3 s4 s5 IQcmd IPcmd s6(iq) s7(id) Ed Eq s8 s9 Pline Qline theta_conv Vt Qg Pactual omega'; %order of states
-x00_inv_infbus = fsolve(@(x)VoltageSource_InfBus(0,x,inverter_params),x0_inv_infbus);
+options_fsolve = optimoptions('fsolve','Algorithm','Levenberg-Marquardt',...
+    'StepTolerance', 1e-8,'FunctionTolerance', 1e-5,'MaxFunctionEvaluations',...
+    500000, 'MaxIterations',100000,'StepTolerance',1e-5,'OptimalityTolerance', 1e-8);
+
+stateLabel_inv_infbus = 's1 s2 s3 s4 s5 IQcmd IPcmd s6(iq) s7(id) Ed Eq s8 s9 Pline Qline theta_conv Vt Qg Pactual omega Vtd Vtq'; %order of states
+x00_inv_infbus = fsolve(@(x)VoltageSource_InfBus(0,x,inverter_params),x0_inv_infbus,options_fsolve);
+
+
 printmat([x0_inv_infbus x00_inv_infbus], 'Initial States', stateLabel_inv_infbus, 'x0 x00')
 
 % Set up Mass Matrix to solve DAE
 % Should have 1's corresponding to diff eqs, 0 corresponding to alg eqns
-n = 17;     % number of states (in x)
+n = 20;     % number of states (in x)
 M = eye(n);
 % M(1,1) - M(5,5) -> ds1/dt - ds5/dt -> 1
 M(6,6) = 0;     %IQcmd
@@ -38,14 +44,14 @@ M(15,15) = 0;   % Qline
 M(17,17) = 0;   % Vt
 M(18,18) = 0;   % Qg
 M(19,19) = 0;   % Pactual
-%M(20,20) -> domega/dt -> 1
+%M(20,20)  -> domega/dt -> 1
 
 % Set up time span vector
 tspan = 0:Ts:1;
 
 % Solve DAEs
 options = odeset('Mass', M, 'RelTol', 1e-4, 'AbsTol', 1e-6);
-[t, y] = ode15s(@(t,x)VoltageSource_InfBus(t, x, inverter_params), tspan, x00_inv_infbus,options);
+[t, y] = ode15s(@(t,x)VoltageSource_InfBus(t,x,inverter_params),tspan,x00_inv_infbus,options);
 
 
 %% Bus inf simple, which is only 2 algebraic equations for power flow
