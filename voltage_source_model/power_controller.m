@@ -4,7 +4,6 @@
 %function dy = power_controller(x_pwr_ctrl, Vt,Qg,omega,Pactual,[Iqcmd,
 %Ipcmd], params)
 
-%states: x_pwr_ctrl, Vt, Qg, omega, Pactual
 
 
 function dy = power_controller(x_pwr_ctrl, Vt, Qg, omega, Pactual, IQcmd, IPcmd, params)

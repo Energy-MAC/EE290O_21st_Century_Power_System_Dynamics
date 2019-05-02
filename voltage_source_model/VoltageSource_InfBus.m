@@ -19,10 +19,14 @@ Eq = x(11);                     % q-component of E voltage source
 x_pwm_sw = x(12:13);              % s8, s9
 
 %will have to change indices later when adding in modulation block
-Vt = x(14);                     % terminal voltage
-Qg = x(15);                     % reactive power
-omega = x(16);                  % angular frequency
-Pactual = x(17);                % actual angular frq
+Pline = x(14);                  % line real power
+Qline = x(15);                  % line reactive power
+theta_conv = x(16);             % converter angle
+
+Vt = x(17);                     % terminal voltage
+Qg = x(18);                     % converter reactive power
+Pactual = x(19);                % converter real power
+omega = x(20);                  % converter angular freq
 
 % include all all DAEs here
 inverter_dxdt = [
@@ -34,10 +38,7 @@ inverter_dxdt = [
     
     % TODO: will get Vt, Qg, omega, Pactual from power flow equations? 
     power_controller(x_pwr_ctrl, Vt, Qg, omega, Pactual, IQcmd, IPcmd, params);    
-    
-%     0;  % d(IQcmd)/dt
-%     0;  % d(IPcmd)/dt
-    
+      
     %Inner Current Loop - generates iq and id (s6 and s7)
     % 2 diff eqs: ds6/dt, ds7/dt
     % 0 alg eqns
@@ -48,18 +49,25 @@ inverter_dxdt = [
     % 0 diff eqns
     % 2 alg eqns: Ed, Eq
     % 4 variables: s6, s7, Ed, Eq
-    voltage_source(x_inner_curr_loop, Ed, Eq, params);
+    voltage_source(x_inner_curr_loop, Ed, Eq, Pactual, Qg, params);
     
     %PWM Switching Delay - generates s8 and s9
     % 2 diff eqns: ds8/dt, ds9/dt
     % 0 alg eqns
     % 4 variables: s8, s9, Ed, Eq
-    PWM_switching_delay(x_pwm_sw, Ed, Eq, params)
+    PWM_switching_delay(x_pwm_sw, Ed, Eq, params);
     
     %PWM block - still need to figure out how to implement
     
     %Infinite Bus - solves Power Flow Equations
-    infBusNwk(Vt, Qg, omega, Pactual)
+    % 1 difff eqn: dtheta_conv/dt
+    % 2 alg eqns: Pline, Qline
+    infBusNwk(Vt, Qg, Pactual, theta_conv, omega, Pline, Qline, params);
+    
+    0;  % dVt/dt = 0
+    0;  % dQg/dt = 0
+    0;  % dPactual/dt = 0 
+    0;  % domega/dt = 0
     
     ];
 

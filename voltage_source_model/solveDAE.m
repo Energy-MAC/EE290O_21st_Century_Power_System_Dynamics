@@ -17,7 +17,7 @@ Ts = 0.05;  % time step size
 %% Converter Model with Infinite Bus 
 
 % Use fsolve to initialize states
-stateLabel_inv_infbus = 's1 s2 s3 s4 s5 IQcmd IPcmd s6(iq) s7(id) Ed Eq s8 s9 Vt Qg omega Pactual'; %order of states
+stateLabel_inv_infbus = 's1 s2 s3 s4 s5 IQcmd IPcmd s6(iq) s7(id) Ed Eq s8 s9 Pline Qline theta_conv Vt Qg Pactual omega'; %order of states
 x00_inv_infbus = fsolve(@(x)VoltageSource_InfBus(0,x,inverter_params),x0_inv_infbus);
 printmat([x0_inv_infbus x00_inv_infbus], 'Initial States', stateLabel_inv_infbus, 'x0 x00')
 
@@ -32,12 +32,13 @@ M(7,7) = 0;     %IPcmd
 M(10,10) = 0;   % Ed
 M(11,11) = 0;   % Eq
 % M(12,12) - M(13,13) -> ds8/dt - ds9/dt -> 1
-
-%???? - Are these alg eqns? 
-M(14,14) = 0;   % Vt
-M(15,15) = 0;   % Qg
-M(16,16) = 0;   % omega
-M(17,17) = 0;   % Pactual
+M(14,14) = 0;   % Pline
+M(15,15) = 0;   % Qline
+%M(16,16) -> dtheta_conv/dt -> 1
+M(17,17) = 0;   % Vt
+M(18,18) = 0;   % Qg
+M(19,19) = 0;   % Pactual
+%M(20,20) -> domega/dt -> 1
 
 % Set up time span vector
 tspan = 0:Ts:1;
