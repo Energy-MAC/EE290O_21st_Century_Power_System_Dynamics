@@ -4,9 +4,22 @@ addpath(genpath('device_models'))
 addpath('utils')
 parameters
 
+%% Power Flow initializer
+S=readcf('DAIMIB.cf');
+S=bldybus(S); 
+bldpfloweqs(S)
+S=pflow(S);
+V_R = S.Bus.Voltages(2)*cosd(S.Bus.Angles(2));
+V_I = S.Bus.Voltages(2)*sind(S.Bus.Angles(2));
+V_bus = [infbus_params.V_inf + 1j*0; 
+         V_R + 1j*V_I];
+I_RI_BUS = S.Ybus*V_bus;
+S_BUS = V_bus.*conj(I_RI_BUS);
+
 %% Set- up DAE Solver 
 options_dae = optimoptions('fsolve','Algorithm','trust-region-dogleg','StepTolerance', 1e-8,'FunctionTolerance', 1e-8,'MaxFunctionEvaluations',500000, 'MaxIterations',100000,'StepTolerance',1e-8,'OptimalityTolerance', 1e-8);
-x00_IB = fsolve(@(x)DAIMIB2(0,x,inverter_params,line_params, infbus_params),[x0,1.02,0],options_dae);
+%x00_IB = fsolve(@(x)DAIMIB2(0,x,inverter_params,line_params, infbus_params),[x0,1.02,0],options_dae);
+x00_IB = fsolve(@(x)DAIMIB(0,x,inverter_params, line_params, infbus_params),[x0,V_R,V_I],options_dae);
 x00 = fsolve(@(x)DAIM(0,x,inverter_params),x0,options_dae);
 
 %x00(20) = 1;
@@ -22,11 +35,11 @@ opts = odeset('RelTol',1e-8,'AbsTol',1e-8);%'Mass',M);
 % Specific time varying statements can be defined at the bottom of the
 % script.
 inverter_params.tvar_fun = @p_ref_step;
-[t4_1_ext,y4_1_ext] = ode23t(@(t,x)DAIMIB2(t,x,inverter_params, line_params, infbus_params), [0:0.01:10], x00_IB', opts_IB);
+[t4_1_ext,y4_1_ext] = ode23t(@(t,x)DAIMIB(t,x,inverter_params, line_params, infbus_params), [0:0.01:10], x00_IB', opts_IB);
 [t4_1,y4_1] = ode23t(@(t,x)DAIM(t,x,inverter_params), [0:0.01:10], x00', opts);
 
 inverter_params.tvar_fun = @wg_ramp;
-[t4_2_ext,y4_2_ext] = ode23t(@(t,x)DAIMIB2(t,x,inverter_params, line_params, infbus_params), [0:0.01:10], x00_IB', opts_IB);
+[t4_2_ext,y4_2_ext] = ode23t(@(t,x)DAIMIB(t,x,inverter_params, line_params, infbus_params), [0:0.01:10], x00_IB', opts_IB);
 [t4_2,y4_2] = ode23t(@(t,x)DAIM(t,x,inverter_params), [0:0.01:10], x00', opts);
 
 %Figure 8: Plot power during step response. p = vod*iod+voq*ioq

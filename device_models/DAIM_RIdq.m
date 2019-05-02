@@ -1,4 +1,4 @@
-function [inverter_ODE, I_IR] = DAIM_IRdq(t,x,y,inverter_params)
+function [inverter_ODE, I_RI] = DAIM_RIdq(t,x,y,inverter_params)
 
     inverter_params = inverter_params.tvar_fun(t, inverter_params);
 
@@ -35,8 +35,8 @@ function [inverter_ODE, I_IR] = DAIM_IRdq(t,x,y,inverter_params)
     qm=x(19);
     
     %DQ DQ for power flow
-    V_dq = IR_dq(delta_theta_vsm)*[V_R; V_I];
-    
+    V_dq = RI_dq(delta_theta_vsm)*[V_R; V_I];
+        
 inverter_ODE=[
     vsm_inertia(delta_w_vsm, [iod, vod, ioq, voq, vpll_d, vpll_q, epsilon_pll], inverter_params);
     voltage_control([vod, voq, icvd, icvq, xi_d, xi_q], [iod, ioq,phi_d, phi_q, gamma_d, gamma_q, qm, delta_w_vsm], inverter_params);
@@ -45,7 +45,7 @@ inverter_ODE=[
     reactive_power_droop(qm, [iod, vod, ioq, voq], inverter_params);
     ];
 
-I_IR = dq_IR(delta_theta_vsm)*[iod; ioq];
+I_RI = inverter_params.BaseMVA*dq_RI(delta_theta_vsm)*[iod; ioq];
 
 
     

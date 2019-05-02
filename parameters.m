@@ -43,6 +43,7 @@ inverter_params.w_ref = 1; %Inverter frequency set point in p.u.
 
 inverter_params.v_rated = 690; % Rated Voltage
 inverter_params.s_rated = 2.75e6; % Rated power
+inverter_params.BaseMVA = inverter_params.s_rated/1e6;
 inverter_params.wb = 2*pi*50; % Rated angular frequency
 inverter_params.w_ref = 1; %Inverter frequency set point in p.u.
 inverter_params.wg = 1; % Grid frequency in p.u.

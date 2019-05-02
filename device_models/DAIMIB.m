@@ -1,9 +1,24 @@
-function DAIMIB_ODE = DAIMIB(t,x,inverter_params, line_params, infbus_params)
+function DAIMIB_DAE = DAIMIB(t,x,inverter_params, line_params, infbus_params)
 
-    V_g = x(20);
-    theta_g = x(21);
-        
-    Q_gen = x(19);
+    V_R = x(20);
+    V_I = x(21);
     
-    DAIMIB_ODE = [DAIM(t, x(1:19), [V_g,theta_g], inverter_params);
-                  pf_eq_IB(Q_gen, [V_g,theta_g], inverter_params.p_ref, line_params, infbus_params)];
+    X = line_params.Xl;%line_params.Xl + infbus_params.Xth;
+    Y = 1/(1j*X);
+   
+    Ybus = [Y, -Y; -Y, Y];
+    
+    %1 = infinite bus
+    %2 = inverter
+    V_bus = [infbus_params.V_inf + 1j*0; 
+             V_R + 1j*V_I];
+    
+    I_bus = Ybus*V_bus;   
+    
+    [DAIM_ODE, DAIMI_RI] = DAIM_RIdq(t, x(1:19), [V_R,V_I], inverter_params);
+    
+    DAIMI_sysMVA = DAIMI_RI./infbus_params.SystemBaseMVA;
+    
+    DAIMIB_DAE = [DAIM_ODE;
+                  DAIMI_sysMVA(1) - real(I_bus(2));
+                  DAIMI_sysMVA(2) - imag(I_bus(2))];
