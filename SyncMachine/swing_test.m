@@ -11,21 +11,26 @@ delta = y(2);
 % p_h = y(8);
 % q_h = y(9);
 M=0.1;    
-D=0.1;  
-P_d=0.7;
+D=0.4;  
+P_d=1.0;
 P_e= y(3);
 v_g = 1;
 v_s = 1;
-z = 0.05;
+z = 0.5;
 W_s = 1;
-theta_s = 1;
+theta_s = 0;
+
+% system phasor voltage (eq 15.4)
+v_d = v_s*sin(delta - theta_s);
+v_q = v_s*cos(delta - theta_s);
+
 dydt = [
     %omega dot - change in angular speed (eq 15.5 part 1)
 %     1/M *(P_d - P_e - D*(w)); 
-    1/M *(P_d - P_e - D*(w-W_s)); 
+      1/M *(P_d - P_e - D*(w-W_s)); 
     %delta dot - change in torque (eq 15.5 part 2)
-    377*(w-W_s);
-    v_g*v_s/z*sin(w - theta_s) - P_e;
+    314.16*(w-W_s);
+    v_g*v_s/z*sin(delta - theta_s) - P_e;
 %     % Algebraic equations
 %     % t_e electrical torque | t_e = (eq. 15.6)
 %     psi_d*i_q - psi_q*i_d-t_e;
@@ -38,9 +43,7 @@ dydt = [
 %     v_d*i_d + v_q*i_q-p_h;
 %     % reactive power injection | q_h = (eq 15.3)
 %     v_q*i_d - v_d*i_q-q_h;
-    % system phasor voltage | 0 = (eq 15.4)
-%     v_h*sin(delta - theta_h) - v_d;
-%     v_h*cos(delta - theta_h) -v_q
+
     ];
 
 % %data from appendix D machine 1
