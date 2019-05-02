@@ -35,3 +35,5 @@ end
 %     Q_res =  Q_g - (Vg^2/(X) - V_inf*Vg*cos(theta-theta_inf)/X);
 %     
 %     vars = [P_res, Q_res]';
+
+

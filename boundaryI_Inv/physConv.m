@@ -4,7 +4,6 @@ function f = physConv(x_phys,Ipcmd,Iqcmd,Ipterm,Iqterm,params)
 % characteristic curves
 
 
-
 % Inputs: Ipcmd,Iqcmd,Vterm
 % Outputs: Iterm
 
