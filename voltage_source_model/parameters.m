@@ -12,73 +12,89 @@
 % -real power order = combo of power setpoint and active power droop coeff
 % -reactive power order = combo of voltage error and reactive power droop
 
-%inputs
-inverter_params.Vt
-inverter_params.Qg
-inverter_params.omega
-inverter_params.Pactual
+% %limits
+% %should set to limits as described on pg. 45 in rama thesis
+% inverter_params.Pmax; % kW
+% inverter_params.Qmax;  % kVar, for 0.99 power factor
+% inverter_params.Qmin; % kVar
 
-%intermediate outputs
-inverter_params.Qcmd
-inverter_params.Pcmd
+% %reference points
+inverter_params.Vref = 480;         % volts            
+inverter_params.Pref = 0;           % watts
+inverter_params.omega_s = 377;      % rad/s
 
-%limits
-%should set to limits as described on pg. 45 in rama thesis
-inverter_params.Pmax; % kW
-inverter_params.Qmax;  % kVar, for 0.99 power factor
-inverter_params.Qmin; % kVar
-
-%reference points
-inverter_params.Vref % V
-inverter_params.Pref
-inverter_params.omega_s = 377;   % rad/s
-%QV droop (is this right?)
+%QV droop - values taken from Rama Thesis Table 5.1
 % needed to obtain stable operation between converers when multiple
 % converters connected to same bus
-inverter_params.Rq
-inverter_params.Rp
+inverter_params.Rq = 0.0;   % per-unit
+inverter_params.Rp = 0.05;  % per-unit
 
-%Outer current loop
+%Outer current loop - values taken from Rama paper Section B 
     %reactive power controller
-inverter_params.Ki
-inverter_params.Kp
+inverter_params.Ki = 5.0; %(from thesis) %20.0;
+inverter_params.Kp = 1.0; %(from thesis) %4.0;
 inverter_params.Kiq = 10.0; 
-inverter_params.Tr
-
+inverter_params.Tr = 0.02;  % sec, from Rama thesis Table 5.1
+ 
     %real power controller
-inverter_params.Tfrq
-inverter_params.TGpv
+%inverter_params.Tfrq
+inverter_params.TGpv = 0.01; % sec, from Rama thesis Table 5.1
 inverter_params.Kip = 10.0;
 
-%outputs from power controller (inputs to inner current loop)
-inverter_params.Iqcmd
-inverter_params.Ipcmd
-
-
 %Inner current loop - real and reactive
-inverter_params.Td = 10e-3;     % sec
-inverter_params.Tq = 10e-3;     % sec
-inverter_params.Imax    %current limit
+inverter_params.Td = 0.01;     % sec
+inverter_params.Tq = 0.01;     % sec
 
-
+% inverter_params.Imax    %current limit, not using right now
+                            %TODO: add in
+ 
+ 
 %PWM stage
-inverter_params.Teq = 10e-3;    % sec
-inverter_params.Ted = 10e-3;    % sec
-
-inverter_params.Vdc
-inverter_params.VT
-
-%coupling impedance
-inverter_params.Rf
-inverter_params.Xf
+inverter_params.Teq = 0.01;    % sec
+inverter_params.Ted = 0.01;    % sec
+ 
+% inverter_params.Vdc
+% inverter_params.VT
+ 
+%coupling impedance - from thesis pg. 88
+inverter_params.Rf = 0.004;    % per-unit
+inverter_params.Xf = 0.05;      % per-unit         
 
 % inf bus network
-inverter_params.Xe=0.1;
-inverter_params.ZL=0.1;
-inverter_params.Vinf=1000;
+inverter_params.Xe=0.5;
+inverter_params.ZL=0.5;
+inverter_params.Vinf=480;
 inverter_params.theta_inf = 0;
 
+%% x0 starting states
 
-%need to set x0?
+% for infinite bus example 
+% Vt=550, Vinf=480, so expect power flow from inv to inf bus
+x0_bus_inf = [550 0 0 0 0 0]';
 
+% for converter connected to infinite bus example 
+%initial conditions
+s1_0 = 480;
+s2_0 = 480;
+s3_0 = 0;
+s4_0 = 0;
+s5_0 = 0;
+IQcmd_0 = 0;
+IPcmd_0 = 0;
+s6_0 = 0;
+s7_0 = 0;
+Ed_0 = 480;
+Eq_0 = 480;
+s8_0 = 480;
+s9_0 = 480;
+Pline_0 = 0;
+Qline_0 = 0;
+theta_conv_0 = 0;
+Vt_0 = 480;
+Qg_0 = 0;
+Pactual_0 = 0;
+omega_0 = inverter_params.omega_s;
+
+x0_inv_infbus=[s1_0 s2_0 s3_0 s4_0 s5_0 IQcmd_0 IPcmd_0 s6_0 s7_0 Ed_0 Eq_0 s8_0 s9_0 Pline_0 Qline_0 theta_conv_0 Vt_0 Qg_0 Pactual_0 omega_0]';
+%s1 s2 s3 s4 s5 IQcmd IPcmd s6(iq) s7(id) Ed Eq s8 s9 Pline Qline theta_conv Vt Qg Pactual omega
     

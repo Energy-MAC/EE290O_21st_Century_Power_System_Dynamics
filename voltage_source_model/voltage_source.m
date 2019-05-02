@@ -3,25 +3,36 @@
 
 
 
-function dy = voltage_source(x_volt_source,  params)
+function dy = voltage_source(x_inner_curr_loop, Ed, Eq, Pactual, Qg, Vt, theta_conv, params)
 % Inputs, outputs, and params of state space rep:
-    % Inputs: [iq, id] (from power_controller) 
-    % States: 
-    % Outputs: 
+    % Inputs: [iq, id] (from inner_current_loop) 
+    % Intermediate states: 
+    % Outputs: Ed, Eq
    
 % -----------------------------------------------
 
 %get reference parameters
-%x_inner_curr_loop is an array that holds the states s6 - s7 as written in the
-%Rama thesis
+Rf = params.Rf;
+Xf = params.Xf;
+
+id = x_inner_curr_loop(1);  % s6 = iq
+iq = x_inner_curr_loop(2);  % s7 = id
+
+%need to calculate Vtd, Vtq
+% Vtd = (Pactual+Qg)/(2*id);
+% Vtq = (Pactual-Qg)/(2*iq);
+
+Vtd = Vt*cos(theta_conv);
+Vtq = Vt*sin(theta_conv); 
 
 dy = [
-    %%% Differential equations:
     
-    %ds8/dt = 
-    (1/Ted)*(Ed - s8);
+    %%% Algebraic equations: 
     
-    %ds9/dt = 
-    (1/Teq)*(Eq-s9);
+    % 0 = 
+    Vtd + id*Rf - iq*Xf - Ed;
+    
+    % 0 = 
+    Vtq + iq*Rf + id*Xf - Eq;
 
 ];
