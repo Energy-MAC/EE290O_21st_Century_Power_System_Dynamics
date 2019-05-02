@@ -28,7 +28,7 @@ clc; close all; clear all;
 
 parameters % call the parameters.m to set populate workspace
 % after calling, workspace will have "inverter_params" and x0 vars
-Ts=0.05
+Ts=0.05;
 
 %% Bus inf simple, which is only 2 algebraic equations for power flow
 % FSOLVE to initialize

@@ -77,3 +77,6 @@ x0_test1=[480 0 0 0 480 0 0 wset 0 0 repmat(0,1,6) Vtset 480]';
 %bound_infSimple
 x0_test2=[550 0 0 0 0 0]';
 % Vt=550, Vinf=480, so expect power flow from inv to inf bus
+
+x_QVdroop x_QVdroop x_QVdroop Qcmd I_ctrl I_ctrl Ipcmd Iqcmd ...
+    x_phys x_phys Iqterm Ipterm Pline Qline Vterm Vterm_theta Vref
