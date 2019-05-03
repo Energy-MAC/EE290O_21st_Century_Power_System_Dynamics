@@ -1,35 +1,26 @@
-function [ SM_dxdt ] = twoaxisSM(t,x,params, cntrl)
+function [ SM_dxdt ] = twoaxisSM(x,params)%, cntrl)
 
 %The Parameters
-M=params.M;    %Machine starting time = 2H
-D=params.D;  
-v_g = params.v_g;
-v_s = params.v_s;
-X = params.X;
-W_s = params.W_s;
-theta_s = params.theta_s;
+M=params.M; %Machine starting time = 2H; % H %Inertia constant [MVA]
+D=params.D; % Damping Constant 
+W_s = params.W_s; %Reference Frequency in per unit
 freq_rads = params.freq_s*2*pi(); %system reference frequency in hertz is converted to rad/s per second
+r_a = params.r_a; %armature resistance [pu]
+x_d = params.x_d; % d-axis synchronous reactance
+xprime_d = params.xprime_d; % d-axis transient reactance
+x_q = params.x_q; % q-axis synchronous reactance
+xprime_q = params.xprime_q; % q-axis transient reactance
+Tprime_d0 = params.Tprime_d0;%d-axis open circuit transient time constant
+Tprime_q0 = params.Tprime_q0;%q-axis open circuit transient time constant
 
 %parameters to be replaced by control inputs
-P_m0=params.P_m;
-v_f0 = params.v_f;
+P_m0=params.P_m0;
+v_f0 = params.v_f0;
 
 % %Control Inputs:
 % v_f0 = cntrl.v_f; % Field Voltage
 % P_m0 = cntrl.v_f; % Mechanical Power (we could change this to torque, and multiply by x)
-% 
-% H %Inertia constant [MVA]
-% r_a %armature resistance [pu]
-% x_t % Leakage Reactance
-% x_d % d-axis synchronous reactance
-% xprime_d % d-axis transient reactance
-% x_q % q-axis synchronous reactance
-% xprime_q % q-axis transient reactance
-% T_AA %d-axis additional leakage time constant
-% Tprime_d0 %d-axis open circuit transient time constant
-% Tprime_q0 %q-axis open circuit transient time constant
-% alpha_p %Active power ratio at node
-% alpha_q %Reactive power ratio at node
+
 
 %Defining the variables
 w = x(1);
@@ -41,27 +32,18 @@ i_q = x(6);
 i_d = x(7);
 v_q = x(8);
 v_d = x(9);
-v_h = x(10);
-theta_h = x(11);
-p_h = x(12);
-q_h = x(13);
-v_f = x(14);
+v_f = x(10);
+P_m = x(11);
+v_h = x(12);
+theta_h = x(13);
+P_h = x(14);
+Q_h = x(15);
 
-% %our shortcut to defining the bus interface (voltage):
-% v_h = v_s;
-% theta_h = theta_s;
-% 
-% % voltage at bus_h (eq 15.4)
-% v_h*sin(delta - theta_h) - v_d;
-% v_h*cos(delta - theta_h) - v_q;
-% 
-% %Power injections at bus h
-% P_h = v_d*i_d+v_q*i_q;
-% Q_h = v_q*i_d-v_d*i_q;
+
 
 SM_dxdt = [
     %omega dot - change in angular speed (eq 15.5 part 1)
-    1/M *(P_m - P_e - SM_Params.D*(w-W_s)); %assumes w = 1, so w*tau_m = tau_m = P_m
+    1/M *(P_m - P_e - D*(w-W_s)); %assumes w = 1, so w*tau_m = tau_m = P_m
     %delta dot - change in torque (eq 15.5 part 2)
     freq_rads*(w-W_s);
     %eprime_d dot
