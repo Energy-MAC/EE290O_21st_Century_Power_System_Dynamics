@@ -1,4 +1,4 @@
-function inverter_dxdt=bound_infSimple(t,x,params);
+function inverter_dxdt=bound_infSimple(t,x,params)
 
 % Internal states of each block
 % Note: everything passed into a sub function must be a param or a state!
@@ -17,3 +17,4 @@ inverter_dxdt=[
     0;
     infBusNwk(Ipterm,Iqterm,Vterm,Vterm_theta,Pline,Qline,params);
     ];
+end

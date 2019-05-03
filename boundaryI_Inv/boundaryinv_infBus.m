@@ -1,5 +1,5 @@
 % Create simple circuit, inverter, RLC load, gnd
-function inverter_dxdt=boundaryinv_infBus(t,x,params);
+function inverter_dxdt=boundaryinv_infBus(t,x,params)
 % Note: everything passed into a sub function must be a param or a state!
 % Note: order of states is exactly alligned with ordering of diff eqs in
 % dxdt
@@ -7,29 +7,32 @@ function inverter_dxdt=boundaryinv_infBus(t,x,params);
 
 x_QVdroop=x(1:3); % internal states gi, no specific name
 Qcmd=x(4);
-x_Ictrl=x(5:6);% internals states gi
-Ipcmd=x(7);
-Iqcmd=x(8); % new
-x_phys=x(9:10); % internal states gi
-Ipterm=x(11);
-Iqterm=x(12);
-Pline=x(13);
-Qline=x(14);
-Vterm=x(15); % new
-Vterm_theta=x(16); % new 
-Vref=x(17); %new
+x_Ictrl(1)=x(5);% internals states gi
+Ipcmd=x(6);
+Iqcmd=x(7); % new
+w=x(8);
+Pcmd=x(9);
+Vterm_theta=x(10);
+x_phys=x(11:12); % internal states gi
+Ipterm=x(13);
+Iqterm=x(14);
+Pline=x(15);
+Qline=x(16);
+Vterm=x(17); 
+Vref=x(18);
 
-inverter_dxdt=[
 % DAEs
+inverter_dxdt=[
     QVdroop(x_QVdroop,Vterm,Vref,Qcmd,params); % 4 diff eq, g1/g2/g3/Qcmd
-    current_control(x_Ictrl,Qcmd,Vterm*Iqterm,Vterm,Iqcmd,Ipcmd,params); % 2 diff eq, 1 alg, g1/g2/Ipcmd
-    0; % d(Ipcmd)=0
-    physConv(x_phys,Ipcmd,Iqcmd,Iqterm,Ipterm,params); % 2 diff eq, 2 alg, g1/g2/Ipterm/Iqterm
+    current_control(x_Ictrl,Qcmd,Vterm*Iqterm,Vterm,Iqcmd,Ipcmd,Vterm_theta,Pcmd,w,params); % 2 diff eq, 1 alg, g1/g2/Ipcmd
+    physConv(x_phys,Ipcmd,Iqcmd,Ipterm,Iqterm,params); % 2 diff eq, 2 alg, g1/g2/Ipterm/Iqterm
     infBusNwk(Ipterm,Iqterm,Vterm,Vterm_theta,Pline,Qline,params); % 2 alg, Pline/Qline
     0; % d(Vterm)=0
-    0; % d(Vterm_theta)=0
     0; % d(Vref)=0
     ];
+end
+
+
 
 %% Create combined inv model for LTI sys
 % % % using series MATLAB func reference: https://www.mathworks.com/help/control/ref/series.html

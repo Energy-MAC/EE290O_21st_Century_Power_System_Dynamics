@@ -21,15 +21,18 @@ inverter_params.Tr=0.02; % sec, vmeas lag
 inverter_params.Tv=0.05; % sec
 inverter_params.Tc=0.15; % sec, cycle time + comm delay + control filtering
 inverter_params.Vfrz=0.7; % not used for now
-inverter_params.Kpv=18; % QVdroop coeff, prop
-inverter_params.Kiv=5;
+inverter_params.Kpv=1; % originally 18, QVdroop coeff, prop
+inverter_params.Kiv=1; % originally 5
 inverter_params.Qmax=0.14; % pu
 inverter_params.Qmin=-0.14; % pu
-inverter_params.Tpwr=0.05; % sec, unsure what this is used for
 
 % Current control
 inverter_params.Kqi=0.1;
-inverter_params.Kvi=120;
+inverter_params.Kvi=1; % originally 120, causing blowup
+inverter_params.Tfrq=0.1; % DUNNO
+inverter_params.Kw=1/0.5; % typical Pf droop control gain, from Rama thesis ch 3.2
+inverter_params.ws=1; % pu, from Rama thesis ch 3.2
+
 % Sat block:
 % Vmax=1.1
 % Vmin=0.9
@@ -40,8 +43,8 @@ inverter_params.Kvi=120;
 % Ipmax=
 
 inverter_params.Tpwm=0.02 % for PWM switching
-inverter_params.Khv=1; %  fow now, not used
-inverter_params.Klv=1; % for now, not used
+inverter_params.Khv=1; %  fow now
+inverter_params.Klv=1; % for now
 %inverter_params.K_LPVL=
 
 % inf bus network
@@ -51,15 +54,25 @@ inverter_params.Vinf=480;
 inverter_params.theta_inf=0;
 
 %-------------------------------------
-% Turn controller gains off:
-inverter_params.Kpv=0;
-inverter_params.Kiv=0;
-inverter_params.Kqi=0;
-inverter_params.Kvi=0;
+% % Turn controller gains off:
+% inverter_params.Kpv=0;
+% inverter_params.Kiv=0;
+% inverter_params.Kqi=0;
+% inverter_params.Kvi=0;
 
 % boundaryinv_infBus
  %x0_test1=[480 0 480 0 0 480 repmat(0,1,8) 550 0 480]';
- x0_test1=[480 0 480 0 0 480 repmat(0,1,8) 480 0 480]';
+ %x0_test1=[480 0 0 0 480 repmat(0,1,8) 480 0 480]';
+% varType=[V Q Q Q V I I I I I I P Q V theta V]
+% extended to 20 states with freq control 
+
+wset=0.8; % make this diff from 1 so that inv actuates
+Vtset=485; % make this diff from 480 so that inv actuates
+x0_test1=[480 0 0 0 480 0 0 wset 0 0 repmat(0,1,6) Vtset 480]';
+ %x0_test1=[480 0 0 0 480 0 0 w 0 480 repmat(0,1,6) 480 0 480]';
+% varType=[V Q Q Q V I I w P theta I I I I P Q V V]
+
+
 
 %bound_infSimple
 x0_test2=[550 0 0 0 0 0]';
