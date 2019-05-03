@@ -76,6 +76,16 @@ inverter_params.kffi = 0;
 
 inverter_params.tvar_fun = @default;
 
+% Battery Parameters
+battery_params.fs=2e3; %Switching Frequency of the DC/DC converter
+battery_params.l_b=0.008; % Inductance of the battery
+battery_params.c_dc=0.005; % Converter side DC capacitor
+battery_params.c_batt=0.004; % Battery side DC capacitor
+battery_params.r_batt=0.005; % Battery internal resistance
+battery_params.v_batt=0.9; % Battery voltage 
+battery_params.v_dc_ref=1.01; % Reference value for DC bus voltage
+battery_params.kp_b=0.1; % Proportional gain for regulating DC bus voltage
+battery_params.ki_b=0.1; % Integral gain for regulating DC bus voltage
 %Initial Conditions Inverter
 x0=[
     0 ...       % 1: delta_w_vsm      - Should be near grid at op pt; Infer from d_delta_w_vsm/dt = 0
@@ -100,7 +110,12 @@ x0=[
     0 ...       %17: epsilon_pll      - Infer from d_delta_theta_pll/dt = 0
     0.1 ...     %18: delta_theta_pll  - Fig 10, D'Arco et al, EPSR 122 (2015), "SmartGrids"
     ...
-    0.025       %19: qm               - Fig 11, D'Arco et al, EPSR 122 (2015), "SmartGrids"
+    0.025 ...   %19: qm               - Fig 11, D'Arco et al, EPSR 122 (2015), "SmartGrids"
+    1.01 ...    %v_dc
+    0.49 ...    %i_dc  
+    1.0105 ...  %v_in
+    0 ...       %v_e
+    0.05 ...       %d1
     ];
 
 function params_out = default(t,params_in)
