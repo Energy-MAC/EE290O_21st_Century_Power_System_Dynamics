@@ -44,7 +44,7 @@ inverter_dxdt=[
     current_control([iod, ioq,  phi_d, phi_q], [vod, voq,  icvd, icvq,  xi_d, xi_q, qm, delta_theta_vsm, delta_w_vsm], inverter_params);
     PLL([vpll_d, vpll_q, epsilon_pll, delta_theta_pll], [vod, voq,  delta_theta_vsm], inverter_params);
     reactive_power_droop(qm, [iod, vod, ioq, voq], inverter_params);
-    dc_side([v_dc, i_dc, v_in, v_e, d1],[vod, icvd, voq, icvq], battery_params);
+    battery([v_dc, i_dc, v_in, v_e, d1],[vod, icvd, voq, icvq], battery_params);
     ];
 
     
