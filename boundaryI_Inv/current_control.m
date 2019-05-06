@@ -1,4 +1,4 @@
-function f = current_control(x_Ictrl,Qcmd,Qgen,Vterm,Iqcmd,Ipcmd,Vterm_theta,Pcmd,w,params)
+function f = current_control(x_Ictrl,Qcmd,Iqterm,Vterm,Iqcmd,Ipcmd,Vterm_theta,Pcmd,w,params)
 % Function returns the sys in state space form, to be concatenated with
 % other subsystems of in the inverter
 % Inputs: [Qcmd, Qgen]
@@ -15,6 +15,7 @@ Kqi=params.Kqi;
 ws=params.ws;
 Tfrq=params.Tfrq;
 Kw=params.Kw;
+theta_inf=params.theta_inf;
 
 % % See handwritten work for derivation of state space form from GE PV
 % % inverter paper "Solar Photovoltaic (PV) Plant Models in PSLF"
@@ -29,30 +30,31 @@ Kw=params.Kw;
 % mySys=ss(A,B,C,D,'InputName',{'cur_Qcmd','cur_Qgen','cur_Pord'},'OutputName',{'Iqcmd','Ipcmd'});
 
 g1=x_Ictrl(1);
-
+kphi=60; % associated with 60Hz, see equations for derivation
 f=[
     % Differential:
     %d(g1)/dt=
-    Kqi*(Qcmd-Qgen);
+    Kqi*(Qcmd-Vterm*Iqterm); % Qgen=Vterm*Iqterm
     
     % Algebraic:
     %0=
-    Pcmd/Vterm-Ipcmd;
+    Pcmd/Vterm-Ipcmd; % Set Ipcmd
     
     % Differential:
     % d(Iqcmd)/dt=
     Kvi*(g1-Vterm);
-    % d(w)=
-    0; % originally tried d(w)dt=g2, but this makes DAE second order
-    
+
     % Algebraic:
     % 0=
-    (-1/Kw)*(w-ws)-Pcmd; % Pcmd=
-
-   % Differential:
-    % d(Vterm_theta)=
-    314.16*(w-ws); % change in torque (Milano eq 15.5 part 2)
+    kphi*(w-ws)-(Vterm_theta-theta_inf); % set w, w and ws are pu
+        % change in torque (Milano eq 15.5 part 2), 377=2*pi*60 because w and ws are in pu   
+        
+    % 0=
+%    (-1/Kw)*(w-ws)-Pcmd; % Pcmd=
+    % d(Pcmd)/dt= 
+    Kw*(w-ws); 
 ];
 end
 
 % referring to pg 4 of this paper for w eqns: https://arxiv.org/pdf/1206.5033.pdf
+%  originally tried d(w)dt=g2, but this makes DAE second order

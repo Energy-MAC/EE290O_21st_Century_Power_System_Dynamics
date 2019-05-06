@@ -9,13 +9,17 @@ function f = physConv(x_phys,Ipcmd,Iqcmd,Ipterm,Iqterm,params)
 
 % Set parameters
 Tpwm=params.Tpwm; % delay for PWM switiching
-Khv=params.Khv; % placeholder for high voltage management curve
+% KHV % placeholder for high voltage management curve
     % ^ reduces reacive current injection to limit Vterm to 120%
-Klv=params.Klv; % placeholder for low voltage management curve
+% KLV % placeholder for low voltage management curve
     % ^ linear reduction of active current injection for terminal V below
     % 0.8pu
 %params.K_LPVL % placeholder for limiting Pmax from low V management curve
 
+Ipmax=params.Ipmax;
+Iqmax=params.Iqmax;
+Ipmin=params.Ipmin;
+Iqmin=params.Iqmin;
 
 % Diff Eqs or alg eqs go here
 g1=x_phys(1);
@@ -28,11 +32,16 @@ f=[
     % d(g2)/dt=
     (1/Tpwm)*(Ipcmd-g2);
 
-    % Algebraic: 
+%     % Algebraic: 
+%     %0=
+%     max(min(g2,Ipmax),Ipmin)-Ipterm; % limit by min and max
+%     %0=
+%     max(min(g1,Iqmax),Iqmin)-Iqterm;
+%     
     %0=
-    Khv*g2-Ipterm;
+    g2-Ipterm; % limit by min and max
     %0=
-    Klv*g1-Iqterm;
+    g1-Iqterm;
 ];
 end
 
