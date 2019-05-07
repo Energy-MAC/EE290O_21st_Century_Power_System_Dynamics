@@ -34,7 +34,7 @@ x00_m2 = fsolve(@(x)sync_machine_2states(0, [1.0, x], [eq_p0, V_R, V_I], machine
 
 machine_params.tvar_fun = @p_ref_step;
 opts = odeset('RelTol',1e-8,'AbsTol',1e-8);
-[t_mm2,y_mm2] = ode15s(@(t,x)sync_machine_2states(t, x, [eq_p0, V_R, V_I], machine_params), [0:0.01:30], [1.0, x00_m2]', opts);
+[t_mm2,y_mm2] = ode15s(@(t,x)sync_machine_2states(t, x, [eq_p0, V_R, V_I], machine_params), [0:0.01:50], [1.0, x00_m2]', opts);
  
 figure(1);
 plot(t_mm2,y_mm2(:,2)); 
@@ -49,7 +49,7 @@ x00_m4 = fsolve(@(x)sync_machine_4states(0, [1.0, x], [vf0, V_R, V_I], machine_p
 
 machine_params.tvar_fun = @p_ref_step;
 opts = odeset('RelTol',1e-8,'AbsTol',1e-8);
-[t_mm4, y_mm4] = ode15s(@(t,x)sync_machine_4states(t, x, [vf0, V_R, V_I], machine_params), [0:0.01:30], [1.0, x00_m4]', opts);
+[t_mm4, y_mm4] = ode15s(@(t,x)sync_machine_4states(t, x, [vf0, V_R, V_I], machine_params), [0:0.01:50], [1.0, x00_m4]', opts);
  
 plot(t_mm4,y_mm4(:,2));
 title('(\delta with stepped p_{ref} 0.6 - 0.7 p.u.)');
@@ -95,7 +95,7 @@ x00_OMIB2 = fsolve(@(x)ACGENIB2(0, [1.0, x, V_R, V_I], machine_params, AVR_param
 M = eye(5); M(4,4) = 0; M(5,5) = 0;
 machine_params.tvar_fun = @p_ref_step;
 opts = odeset('RelTol',1e-8,'AbsTol',1e-8, 'Mass',M);
-[t_OMIB2,y_OMIB2] = ode15s(@(t,x)ACGENIB2(t, x, machine_params, AVR_params, line_params, infbus_params), [0:0.01:30], [1.0, x00_OMIB2, V_R, V_I]', opts);
+[t_OMIB2,y_OMIB2] = ode15s(@(t,x)ACGENIB2(t, x, machine_params, AVR_params, line_params, infbus_params), [0:0.01:50], [1.0, x00_OMIB2, V_R, V_I]', opts);
  
 options_fsolve = optimoptions('fsolve','StepTolerance', 1e-8,'FunctionTolerance', 1e-8,'MaxFunctionEvaluations',500000, 'MaxIterations',100000,'StepTolerance',1e-8,'OptimalityTolerance', 1e-8,'display', 'iter');                        
 x00_OMIB4 = fsolve(@(x)ACGENIB4(0, [1.0, x, V_R, V_I], machine_params, AVR_params, line_params, infbus_params), [d_0, eq_p0, ed_pp0, vf0], options_fsolve);           
@@ -103,7 +103,7 @@ x00_OMIB4 = fsolve(@(x)ACGENIB4(0, [1.0, x, V_R, V_I], machine_params, AVR_param
 M = eye(7); M(6,6) = 0; M(7,7) = 0;
 machine_params.tvar_fun = @p_ref_step;
 opts = odeset('RelTol',1e-8,'AbsTol',1e-8, 'Mass',M);
-[t_OMIB4,y_OMIB4] = ode15s(@(t,x)ACGENIB4(t, x, machine_params, AVR_params, line_params, infbus_params), [0:0.01:30], [1.0, x00_OMIB4, V_R, V_I]', opts);
+[t_OMIB4,y_OMIB4] = ode15s(@(t,x)ACGENIB4(t, x, machine_params, AVR_params, line_params, infbus_params), [0:0.01:50], [1.0, x00_OMIB4, V_R, V_I]', opts);
 
 figure(3);
 plot(t_OMIB2,y_OMIB2(:,2));

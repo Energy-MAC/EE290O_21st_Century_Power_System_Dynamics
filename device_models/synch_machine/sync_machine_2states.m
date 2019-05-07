@@ -22,7 +22,6 @@ function [machine_ODE, I_M] = sync_machine_2states(t, x, y, machine_params)
     % DQ-DQ Conversion
     V_dq = RI_dq(d)*[V_tR; V_tI]; 
     
-    % Disregard assumption in the book about Xd_p = Xq
     i_q = V_dq(1)/Xd_p;                  %15.36
     i_d = (Emf_q - V_dq(2))/Xd_p;        %15.36
     
