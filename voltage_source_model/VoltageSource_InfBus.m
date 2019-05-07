@@ -23,10 +23,12 @@ Pline = x(14);                  % line real power
 Qline = x(15);                  % line reactive power
 theta_conv = x(16);             % converter angle
 
-Vt = x(17);                     % terminal voltage
-Qg = x(18);                     % converter reactive power
-Pactual = x(19);                % converter real power
-omega = x(20);                  % converter angular freq
+Qg = x(17);                     % converter reactive power
+Pactual = x(18);                % converter real power
+omega = x(19);                  % converter angular freq
+
+Vt = x(20);                     % terminal voltage
+
 
 % include all all DAEs here
 inverter_dxdt = [
@@ -62,12 +64,9 @@ inverter_dxdt = [
     %Infinite Bus - solves Power Flow Equations
     % 1 difff eqn: dtheta_conv/dt
     % 2 alg eqns: Pline, Qline
-    infBusNwk(Vt, Qg, Pactual, theta_conv, omega, Pline, Qline, params);
-    
+     infBusNwk(Vt, theta_conv, omega, Qg, Pactual, Pline, Qline, x_inner_curr_loop, params);
+
     0;  % dVt/dt = 0
-    0;  % dQg/dt = 0
-    0;  % dPactual/dt = 0 
-    0;  % domega/dt = 0
-    
-    ];
+       
+   ];
 

@@ -1,11 +1,3 @@
-% M-file accepts two arguments: t and y
-% returns column vector dy
-
-%function dy = power_controller(x_pwr_ctrl, Vt,Qg,omega,Pactual,[Iqcmd,
-%Ipcmd], params)
-
-
-
 function dy = power_controller(x_pwr_ctrl, Vt, Qg, omega, Pactual, IQcmd, IPcmd, params)
 % Inputs, outputs, and params of state space rep:
     % Inputs: [Vt, Qg, omega, Pactual] (measured from circuit -> should come from power flow) 
@@ -66,7 +58,7 @@ dy = [
     (1/Tr)*(Vt-s2); 
    
     % ds3/dt = 
-    (1/TGpv)*(Pref - ((omega - omega_s)/Rp) - s3);
+    (1/TGpv)*(Pref - (377*(omega - omega_s)/Rp) - s3);
     
     % ds4/dt = 
     Kip*(s3 - Pactual);  
