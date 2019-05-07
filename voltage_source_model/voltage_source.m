@@ -29,9 +29,11 @@ dy = [
     
     %%% Algebraic equations: 
     
+    % Solves for Ed
     % 0 = 
     Vtd + id*Rf - iq*Xf - Ed;
     
+    % Solves for Eq
     % 0 = 
     Vtq + iq*Rf + id*Xf - Eq;
 

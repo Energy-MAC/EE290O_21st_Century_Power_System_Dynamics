@@ -30,16 +30,17 @@ inverter_params.Rq = 0.0;   % per-unit
 inverter_params.Rp = 0.05;  % per-unit
 
 %Outer current loop - values taken from Rama paper Section B 
-    %reactive power controller
-inverter_params.Ki = 0.2; %(from thesis) %20.0;
-inverter_params.Kp = 0.2; %(from thesis) %4.0;
-inverter_params.Kiq = 0.2; 
+% gains
+inverter_params.Ki = 0.01; %(from thesis) %20.0;
+inverter_params.Kp = 0.01; %(from thesis) %4.0;
+inverter_params.Kiq = 0.01; 
+inverter_params.Kip = 0.1;
+
+% time constants
 inverter_params.Tr = 0.02;  % sec, from Rama thesis Table 5.1
- 
-    %real power controller
-%inverter_params.Tfrq
 inverter_params.TGpv = 0.01; % sec, from Rama thesis Table 5.1
-inverter_params.Kip = 0.2;
+ 
+%inverter_params.Tfrq
 
 %Inner current loop - real and reactive
 inverter_params.Td = 0.01;     % sec
@@ -79,23 +80,28 @@ s2_0 = 480;
 s3_0 = 0;
 s4_0 = 0;
 s5_0 = 0;
-IQcmd_0 = 1;
-IPcmd_0 = 1;
+IQcmd_0 = -1;
+IPcmd_0 = 0;
 s6_0 = 0;   % iq
 s7_0 = 0;   % id
 Ed_0 = 480;
 Eq_0 = 0;
 s8_0 = 480;
 s9_0 = 0;
-Pline_0 = 0;
-Qline_0 = 0;
+%Pline_0 = 0;
+%Qline_0 = 0;
 theta_conv_0 = 0;
 Qg_0 = 480;
 Pactual_0 = 0;
 omega_0 = inverter_params.omega_s;
 Vt_0 = 485;
 
-x0_inv_infbus=[s1_0 s2_0 s3_0 s4_0 s5_0 IQcmd_0 IPcmd_0 s6_0 s7_0 Ed_0 Eq_0 s8_0 s9_0 Pline_0 Qline_0 theta_conv_0 Qg_0 Pactual_0 omega_0 Vt_0]';
+Ed_star_0 = 480;
+Eq_star_0 = 0;
+
+x0_inv_infbus=[s1_0 s2_0 s3_0 s4_0 s5_0 IQcmd_0 IPcmd_0 s6_0 s7_0 Ed_0 Eq_0 s8_0 s9_0 Vt_0 theta_conv_0 Qg_0 Pactual_0 omega_0 Ed_star_0 Eq_star_0]';
+
+%x0_inv_infbus=[s1_0 s2_0 s3_0 s4_0 s5_0 IQcmd_0 IPcmd_0 s6_0 s7_0 Ed_0 Eq_0 s8_0 s9_0 Pline_0 Qline_0 theta_conv_0 Qg_0 Pactual_0 omega_0 Vt_0]';
 %s1 s2 s3 s4 s5 IQcmd IPcmd s6(iq) s7(id) Ed Eq s8 s9 Pline Qline
 %theta_conv  Qg Pactual omega Vt
     

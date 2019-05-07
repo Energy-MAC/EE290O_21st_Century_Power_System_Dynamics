@@ -23,6 +23,7 @@ s7 = x_inner_curr_loop(2);  % s7 = id
 dy = [
 
     %%% Differential equations: 
+    
     % ds6/dt =
     (1/Tq)*(IQcmd - s6);         % should this be -Iqcmd as in appendix b of Rama thesis
 
