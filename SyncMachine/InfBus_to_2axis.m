@@ -23,5 +23,7 @@ InfBus_params = params{2};
 
 dxdt = [
     twoaxisSM(x,SM_params)
-    InfBus(x,InfBus_params)
+    NoAVR(x(10), SM_params)
+    NoGovernor(x(11),SM_params)
+    InfBus(x(12:15),InfBus_params)
     ];

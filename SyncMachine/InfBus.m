@@ -18,10 +18,10 @@ theta_s = params.theta_s; %Voltage angle of the infinite bus
 % v_d = x(9);
 % v_f = x(10);
 % P_m = x(11);
-v_h = x(12);
-theta_h = x(13);
-P_h = x(14);
-Q_h = x(15);
+v_h = x(1);%x(12);
+theta_h = x(2);%x(13);
+P_h = x(3);%x(14);
+Q_h = x(4);%x(15);
 
 InfBus_dxdt = [
     v_h*v_s/X*sin(theta_h - theta_s) - P_h; %Real Power Flow

@@ -59,8 +59,8 @@ SM_dxdt = [
     v_d + r_a*i_d - eprime_d + xprime_q * i_q;
     v_d*i_d+v_q*i_q - P_h; %Real Power Injection at bus h from internal d-q power
     v_q*i_d-v_d*i_q - Q_h; %Reactive Power Injection at bus h from internal d-q power
-    P_m0 - P_m; %P_m0
-    v_f0-v_f;
+    %P_m0 - P_m; %This is replaced by
+    %v_f0-v_f;
     
     %v_g*v_s/X*sin(delta - theta_s) - P_e;
     
