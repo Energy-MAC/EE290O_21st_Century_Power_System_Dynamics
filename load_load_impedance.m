@@ -19,6 +19,6 @@ end
 M_loads = M_loads(:,1:3);
 
 % Calculate impedane from power
-M_loads(:,[2 3]) = M_loads(:,[2 3])./vecnorm(M_loads(:,[2 3]),2,2);
+%M_loads(:,[2 3]) = M_loads(:,[2 3])./vecnorm(M_loads(:,[2 3]),2,2);
 % Divide reactance by frequency to get inductance
 M_loads(:,3) = M_loads(:,3)/omega;
