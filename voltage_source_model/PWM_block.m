@@ -1,34 +1,49 @@
-% M-file accepts two arguments: t and y
-% returns column vector dy
-
-
-function dy = PWM_block(,  params)
+function dy = PWM_block(t, Ed, Eq, omega, Ed_star, Eq_star, params)
 % Inputs, outputs, and params of state space rep:
-    % Inputs:  Ed, Eq, Vdc, VT
-    % States: 
-    % Outputs: 
-   
-% -----------------------------------------------
+% Inputs:  Ed, Eq, Vdc, VT
+% States: 
+% Outputs: 
 
 %get reference parameters
+omega_s = params.omega_s;
 
 %initialized values:
 VT = sqrt(Ed^2 + Eq^2)/0.6;
 Vdc = sqrt(Ed^2 + Eq^2)/(0.5*0.6);
 
 mag_E = sqrt(Ed^2 + Eq^2);
-phi_E = arctan(Eq/Ed);
+phi_E = atan(Eq/Ed);
 
 m = mag_E/VT;   %should be limited between 0.4 and 1.0
 
 Ea = 0.5*m*Vdc*cos(omega_s*t+phi_E);
-Eb = 0.5*m*Vdc*cos(omega_s*t+phi_E-120);
-Ec = 0.5*m*Vdc*cos(omega_s*t+phi_E-240);
+Eb = 0.5*m*Vdc*cos(omega_s*t+phi_E-2*pi/3);
+Ec = 0.5*m*Vdc*cos(omega_s*t+phi_E-4*pi/3);
+
+% Use Park's transformation on Ea, Eb, and Ec to get Ed_star and Eq_star
+
+% P = (2/3)* | sin(wt)  sin(wt-2pi/3)   sin(wt+2pi/3) |
+%            | cos(wt)  cos(wt-2*pi/3)  cos(wt+2pi/3) |
+%            | 1/2      1/2             1/2           |
+
+% P = (2/3)* | cos(wt)   cos(wt-2pi/3)    cos(wt+2pi/3)  |
+%            | -sin(wt)  -sin(wt-2*pi/3)  -sin(wt+2pi/3) |
+%            | 1/2       1/2              1/2            |
 
 
 dy = [
-    %%% Differential equations:
     
-    
+    %%% Algebraic Equations: 
 
-];
+    % Solves for Ed_star
+    % 0 = 
+    (2/3)*(cos(omega*t)*Ea + cos(omega*t - 2*pi/3)*Eb + cos(omega*t + 2*pi/3)*Ec) - Ed_star;
+
+    % Solves for Eq_star
+    % 0 = 
+    (2/3)*(-sin(omega*t)*Ea - sin(omega*t - 2*pi/3)*Eb - sin(omega*t + 2*pi/3)*Ec) - Eq_star;
+    
+    ];
+
+
+end

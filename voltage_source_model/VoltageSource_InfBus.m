@@ -19,14 +19,18 @@ Eq = x(11);                     % q-component of E voltage source
 x_pwm_sw = x(12:13);              % s8, s9
 
 %will have to change indices later when adding in modulation block
-Pline = x(14);                  % line real power
-Qline = x(15);                  % line reactive power
-theta_conv = x(16);             % converter angle
+%Pline = x(14);                  % line real power
+%Qline = x(15);                  % line reactive power
 
-Vt = x(17);                     % terminal voltage
-Qg = x(18);                     % converter reactive power
-Pactual = x(19);                % converter real power
-omega = x(20);                  % converter angular freq
+Vt = x(14);                     % terminal voltage
+theta_conv = x(15);             % converter angle
+
+Qg = x(16);                     % converter reactive power
+Pactual = x(17);                % converter real power
+omega = x(18);                  % converter angular freq
+
+Ed_star = x(19);
+Eq_star = x(20);
 
 % include all all DAEs here
 inverter_dxdt = [
@@ -57,17 +61,18 @@ inverter_dxdt = [
     % 4 variables: s8, s9, Ed, Eq
     PWM_switching_delay(x_pwm_sw, Ed, Eq, params);
     
-    %PWM block - still need to figure out how to implement
-    
+       
     %Infinite Bus - solves Power Flow Equations
     % 1 difff eqn: dtheta_conv/dt
-    % 2 alg eqns: Pline, Qline
-    infBusNwk(Vt, Qg, Pactual, theta_conv, omega, Pline, Qline, params);
+    %% 2 alg eqns: Pline, Qline
+     infBusNwk(Vt, theta_conv, omega, Qg, Pactual, x_inner_curr_loop, params);
+
+     %PWM block - still need to figure out how to implement
+    PWM_block(t, Ed, Eq, omega, Ed_star, Eq_star, params)
+     
+    %0;  % dVt/dt = 0
     
-    0;  % dVt/dt = 0
-    0;  % dQg/dt = 0
-    0;  % dPactual/dt = 0 
-    0;  % domega/dt = 0
     
-    ];
+       
+   ];
 
