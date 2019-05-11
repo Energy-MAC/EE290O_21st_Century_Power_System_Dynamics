@@ -3,7 +3,6 @@ function f = physConv(x_phys,Ipcmd,Iqcmd,Ipterm,Iqterm,params)
 % reactance Xlcl, where Iterm is computed from a bunch of limiting
 % characteristic curves
 
-
 % Inputs: Ipcmd,Iqcmd,Vterm
 % Outputs: Iterm
 
@@ -32,12 +31,13 @@ f=[
     % d(g2)/dt=
     (1/Tpwm)*(Ipcmd-g2);
 
-%     % Algebraic: 
+    % If want to limit current output:
 %     %0=
 %     max(min(g2,Ipmax),Ipmin)-Ipterm; % limit by min and max
 %     %0=
 %     max(min(g1,Iqmax),Iqmin)-Iqterm;
-%     
+
+    % If DONT want to limit current output:
     %0=
     g2-Ipterm; % limit by min and max
     %0=

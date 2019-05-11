@@ -1,12 +1,14 @@
+% OLD VERSION
+% Version with triple integrator in inverter model
+%--------------------------------------------
 
-
-caseName='case5';
-c = loadcase(caseName);
-N = size(c.bus,1);
-L = size(c.branch,1);
-% MATPOWER manual ch 9.3.5 tells us how to modify a case
-% modify case to have the same
-cnew=extract_islands(c)
+% caseName='case5';
+% c = loadcase(caseName);
+% N = size(c.bus,1);
+% L = size(c.branch,1);
+% % MATPOWER manual ch 9.3.5 tells us how to modify a case
+% % modify case to have the same
+% cnew=extract_islands(c)
 
 % 1) write equations yourself for small network with your own NR code, set inv to be const, run
 % 2) compare with MATPOWER solving PF after modify generator to be same as inv rating
@@ -28,7 +30,7 @@ clc; close all; clear all;
 
 parameters % call the parameters.m to set populate workspace
 % after calling, workspace will have "inverter_params" and x0 vars
-Ts=0.05; % if choose too large you wont see delay constants effecting, if choose too fast not realistic sample time
+Ts=0.1; % if choose too large you wont see delay constants effecting, if choose too fast not realistic sample time
 
 %% Bus inf simple, which is only 2 algebraic equations for power flow
 % FSOLVE to initialize
@@ -37,34 +39,34 @@ Ts=0.05; % if choose too large you wont see delay constants effecting, if choose
  x00_test2 = fsolve(@(x)bound_infSimple(0,x,inverter_params),x0_test2);
  printmat([x0_test2 x00_test2], 'Init States', stateLabel2,'x0 x00_test2')
 
-% solve DAE
-n=6; % num states
-M=eye(n);
-M(5,5)=0; M(6,6)=0;
-tspan = 0:Ts:1;
- options = odeset('Mass',M,'RelTol',1e-4,'AbsTol',1e-6);
- [t,y] = ode15s(@(t,x)bound_infSimple(t,x,inverter_params),tspan,x00_test2,options);
-
-% plot Bus inf simple results
-% always get constant plit because there are no dynamics, computation is
-% static so time does not affect the computation
-figure; 
-subplot(3,1,1);
-plot(t,y(:,5),t,y(:,6),'LineWidth',2); legend('Pline','Qline');
-subplot(3,1,2);
-plot(t,y(:,3),t,y(:,4),'LineWidth',2); legend('Ipterm','Iqterm');
-subplot(3,1,3);
-plot(t,y(:,1),t,y(:,2),'LineWidth',2); legend('Vterm','Vterm_theta');
-sgtitle('Bound Inf Simple');
+% % solve DAE
+% n=6; % num states
+% M=eye(n);
+% M(5,5)=0; M(6,6)=0;
+% tspan = 0:Ts:1;
+%  options = odeset('Mass',M,'RelTol',1e-4,'AbsTol',1e-6);
+%  [t,y] = ode15s(@(t,x)bound_infSimple(t,x,inverter_params),tspan,x00_test2,options);
+% 
+% % plot Bus inf simple results
+% % always get constant plit because there are no dynamics, computation is
+% % static so time does not affect the computation
+% figure; 
+% subplot(3,1,1);
+% plot(t,y(:,5),t,y(:,6),'LineWidth',2); legend('Pline','Qline');
+% subplot(3,1,2);
+% plot(t,y(:,3),t,y(:,4),'LineWidth',2); legend('Ipterm','Iqterm');
+% subplot(3,1,3);
+% plot(t,y(:,1),t,y(:,2),'LineWidth',2); legend('Vterm','Vterm_theta');
+% sgtitle('Bound Inf Simple');
 
 %% Bound I DAE
 % FSOLVE to initialize
  stateLabel1='x_QVdroop x_QVdroop x_QVdroop Qcmd I_ctrl Ipcmd Iqcmd w Pcmd x_phys x_phys Ipterm Iqterm Vterm Vterm_theta Pgen Qgen Vref';
-x00_test1 = fsolve(@(x)boundaryinv_infBus(0,x,inverter_params,Ts),x0_test1);
+x00_test1 = fsolve(@(x)boundaryinv_infBus(0,x,inverter_params,Ts),x0_inv);
 xdot_init=boundaryinv_infBus(0,x00_test1,inverter_params,Ts) % for debugging: compute xdot at first timestep
-printmat([x0_test1 x00_test1 xdot_init], 'Init States', stateLabel1,'x0 x00_test1 xdot')
+printmat([x0_inv x00_test1 xdot_init], 'Init States', stateLabel1,'x0 x00_test1 xdot')
 
-%printmat([x0_test1 xdot_init], 'Init States', stateLabel1,'x0 xdot')
+%printmat([x0_inv xdot_init], 'Init States', stateLabel1,'x0 xdot')
 
 % solve DAE
 n=18; % num states
@@ -74,7 +76,7 @@ M(6,6)=0; M(8,8)=0; M(12,12)=0; M(13,13)=0; M(14,14)=0; M(15,15)=0; M(16,16)=0; 
 % before step change in load
     tspan1 = 0:Ts:10;
     options = odeset('Mass',M,'RelTol',1e-4,'AbsTol',1e-6);
-    [t1,y1] = ode15s(@(t,x)boundaryinv_infBus(t,x,inverter_params,Ts),tspan1,x0_test1,options);
+    [t1,y1] = ode15s(@(t,x)boundaryinv_infBus(t,x,inverter_params,Ts),tspan1,x0_inv,options);
 
 inverter_params.ZL=100+100*j; % load, complex
 
@@ -87,6 +89,7 @@ inverter_params.ZL=100+100*j; % load, complex
  %%
  
 % plot Bound I DAE results
+figure; plot(t,y(:,4),'LineWidth',2); legend('Qcmd');
 figure; 
 subplot(2,2,2);
 plot(t,y(:,14),t,y(:,18),'LineWidth',2); legend('V_{term}','V_{ref}'); 
@@ -98,14 +101,13 @@ plot(t,y(:,12).*y(:,14),'LineWidth',2); legend('Pgen');
 subplot(2,2,4);
 plot(t,y(:,13).*y(:,14),'k-','LineWidth',2); legend('Qgen');
 
-start=8/Ts;
-stop=12/Ts;
+
+start=9/Ts;
+stop=11/Ts;
 data=[y(start:stop,12).*y(start:stop,14) y(start:stop,13).*y(start:stop,14) y(start:stop,12) y(start:stop,13) y(start:stop,14) y(start:stop,18) y(start:stop,8) y(start:stop,15)];
 rowHeader=sprintf('tstep%d ', (start:stop)*Ts);
 printmat(data,'Output dyn sim', rowHeader,'Pgen Qgen Ipterm Iqterm Vterm Vref w Vterm_theta')
-figure; plot(t,y(:,4),'LineWidth',2); legend('Qcmd');
 %%
-figure; plot(t,y(:,6),t,y(:,7),t,y(:,10),t,y(:,11),'LineWidth',2); legend('Ipcmd','Iqcmd','Ipterm','Iqterm');
 %% TIPS
 % refernce for mass matrix: https://www.mathworks.com/help/matlab/math/solve-differential-algebraic-equations-daes.html
 % use fsolve to solve PF and initialize

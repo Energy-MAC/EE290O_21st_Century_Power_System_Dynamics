@@ -1,4 +1,4 @@
-function  [M_k,Y_k,Ybar_k,Y_lm,Ybar_lm,Y_ml,Ybar_ml]=computeYmats(c)
+function  [M_k,Mbar_k,Y_k,Ybar_k,Y_lm,Ybar_lm,Y_ml,Ybar_ml]=computeYmats(c)
     N = size(c.bus,1);
 	L = size(c.branch,1);
 %% Build admittance Y and line admittance matrix Ylm    
@@ -41,6 +41,7 @@ function  [M_k,Y_k,Ybar_k,Y_lm,Ybar_lm,Y_ml,Ybar_ml]=computeYmats(c)
         y = e(:,k)*e(:,k)'*Y; % still a matrix
         Y_k{k} = 1/2*[real(y+y.') imag(y.'-y);imag(y-y.') real(y+y.')];
         M_k{k} = [e(:,k)*e(:,k)' zeros(N,N);zeros(N,N) e(:,k)*e(:,k)'];
+        Mbar_k{k} = [zeros(N,N) e(:,k)*e(:,k)';e(:,k)*e(:,k)' zeros(N,N)]; % this is a guess as not defined in zero duality gap paper
         Ybar_k{k} = -1/2*[imag(y+y.') real(y-y.');real(y.'-y) imag(y+y.')]; 
     end
     % Ylm is a matrix, Y_lm is a cell array

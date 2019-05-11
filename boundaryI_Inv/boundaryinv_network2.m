@@ -1,6 +1,7 @@
-% OLD VERSION
-% builds DAE for boundary I inv + 5-bus network :
-function dxdt = boundaryinv_network(t,x,c,params,Ts,invBus,knowns);
+% NEW VERSION
+% passing in knowns cell array now, deleted off knowns assignment for each
+% bus type
+function dxdt = boundaryinv_network2(t,x,c,params,Ts,invBus,knowns);
 V=knowns{1}; del=knowns{2}; P=knowns{3}; Q=knowns{4};
 
 dxdt=[]; % will fill this
@@ -16,9 +17,10 @@ L = size(c.branch,1);
 % thetaVec_deg=[3.273 -0.759 -0.492  0 4.112]'; % degrees
 % thetaVec=thetaVec_deg*(pi/180); % convert to radians
 
-   [M_k,Y_k,Ybar_k,Y_lm,Ybar_lm,Y_ml,Ybar_ml]=computeYmats(c);
+   [M_k,Mbar_k,Y_k,Ybar_k,Y_lm,Ybar_lm,Y_ml,Ybar_ml]=computeYmats(c);
  %% PF equation matrix formulas
     h_V=@(x,M_k) trace(M_k*x*x'); % note Tr(Mk*x*x')=V^2, not V!
+    h_del=@(x,Mbar_k) trace(Mbar_k*x*x'); % note Tr(Mk*x*x')=V^2, not V!
     h_P=@(x,Y_k) trace(Y_k*x*x');
     h_Q=@(x,Ybar_k) -trace(Ybar_k*x*x');
     h_Pline=@(x,Y_lm) trace(Y_lm*x*x'); % can take in l-->m or m-->l Y matrices
@@ -70,10 +72,7 @@ L = size(c.branch,1);
                 case 1 % slack bus
                     % fill in unknowns
                     P(k)=x(ofs+2*k-1);
-                    Q(k)=x(ofs+2*k);
-                    % fill in knowns
-                    V=vmagVec; 
-                    del=thetaVec;    
+                    Q(k)=x(ofs+2*k); 
                     
                     % setup eqns with rest of unknowns
                     dxdt=[dxdt; -P(k)+h_P([V; del],Y_k{k})]; % create with possibilities of unknowns
@@ -81,35 +80,27 @@ L = size(c.branch,1);
 
                 case 2 % gen bus 
                     % fill in unknowns
-                    del=thetaVec; del(k)=x(ofs+2*k-1);
-                    Q(k)=x(ofs+2*k);
-                    % fill in knowns
-                    V=vmagVec; 
-                    P(k)=c.gen(k,2);  
+                    del(k)=x(ofs+2*k-1);
+                    Q(k)=x(ofs+2*k); 
                     % setup eqns with rest of unknowns
-                    dxdt=[dxdt; -P(k)+h_P([V; del],Y_k{k})]; % create with possibilities of unknowns
+                    dxdt=[dxdt; -del(k)+h_del([V; del],Mbar_k{k})]; % create with possibilities of unknowns
                     dxdt=[dxdt; -Q(k)+h_Q([V; del],Ybar_k{k})]; % create with possibilities of unknowns
 
                 case 3 % load bus
                     % fill in unknowns
-                    V=vmagVec; V(k)=x(ofs+2*k-1);
-                    del=thetaVec; del(k)=x(ofs+2*k);
+                    V(k)=x(ofs+2*k-1);
+                    del(k)=x(ofs+2*k);
                     % fill in knowns
                     if k==invBus
                         % need eqns for setting Qt,Pt,Vterm, Vterm_theta
-                        Q(k)=c.bus(k,4)-Vterm*Iqterm; 
-                        P(k)=c.bus(k,3)-Vterm*Ipterm; 
-                       eqn=[-P(k)+Pt;...
-                           -Q(k)+Qt;...
-                            Vterm-V(k);...
-                            Vterm_theta-del(k)]; % save for after this loop                           
-                    else
-                        Q(k)=c.bus(k,4); 
-                        P(k)=c.bus(k,3);
+                       eqn=[Vterm*Ipterm-P(k)-Pt;...
+                           Vterm*Iqterm-Q(k)-Qt;...
+                            V(k)-Vterm;...
+                            del(k)-Vterm_theta]; % save for after this loop                           
                     end
                     % solve for V & del
-                    dxdt=[dxdt; -P(k)+h_P([V; del],Y_k{k})]; % create with possibilities of unknowns
-                    dxdt=[dxdt; -Q(k)+h_Q([V; del],Ybar_k{k})]; % create with possibilities of unknowns
+                    dxdt=[dxdt; -V(k)+h_V([V; del],M_k{k})]; % create with possibilities of unknowns
+                    dxdt=[dxdt; -del(k)+h_del([V; del],Mbar_k{k})]; % create with possibilities of unknowns
             end
     end
     dxdt=[dxdt; eqn]; % append to dxdt at end so can align with x asignments

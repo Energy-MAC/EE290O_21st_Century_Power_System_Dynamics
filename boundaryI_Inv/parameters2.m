@@ -1,10 +1,6 @@
 % parameters2.m has slightly modified params for 5bus+inv network
 % parameter.m has inf bus params
-% ------------------------------------------------
-% params from GE tutorial manual
-% Modeling of GE Solar PV plans for grid studies (Apr 2010)
-% http://files.engineering.com/download.aspx?folder=72244e74-9cb5-4d18-8ce1-e25fd1b01866&file=GE_Solar_Modeling-v1-1.pdf
-
+%---------------------------------
 % "The aggergate solar plant is modeled as a conventional generator
 % connected to a 480V bus. The generator real power output (Pgen), Qmin,
 % and Qmax should match the solar plant capability
@@ -16,7 +12,6 @@ inverter_params.Pmin=0; % kW
 inverter_params.Qmax=99 % kVar, for 0.99 pow factor
 inverter_params.Qmin=-99 % kVar
 %inverter_params.Pord=500; % arbitrary, user-written solar pow profile
-
 
 % QV droop
 inverter_params.Tr=0.02; % sec, vmeas delay
@@ -47,14 +42,6 @@ inverter_params.kphi=60; % associated with 60Hz, see equations for derivation
 inverter_params.Tpwm=0.02 % for PWM switching time const
 %inverter_params.K_LPVL=
 
-% inf bus network
-% Note: line impedance usually much smaller than load impedance
-inverter_params.Zl=20; % line impedance
-inverter_params.Sload=100+100*j; % load, complex
-
-inverter_params.Vinf=480
-inverter_params.theta_inf=0; % radians
-
 %-------------------------------------
 % % Turn controller gains off:
 inverter_params.Kpv=0;
@@ -62,43 +49,15 @@ inverter_params.Kiv=0;
 inverter_params.Kwi=0; % make large to "turnoff" P-f loop
 
 %------------------------------------
-% boundaryinv_infBus
- %x0_test1=[480 0 480 0 0 480 repmat(0,1,8) 550 0 480]';
- %x0_test1=[480 0 0 0 480 repmat(0,1,8) 480 0 480]';
-% varType=[V Q Q Q V I I I I I I P Q V theta V]
-% extended to 20 states with freq control 
+% may not be used in phys converter block
+inverter_params.Ipmax=inverter_params.Pmax/vmag_inv; % limit in phys conv block
+inverter_params.Iqmax=inverter_params.Qmax/vmag_inv; % limit in phys conv block
+inverter_params.Ipmin=inverter_params.Pmin/vmag_inv; % limit in phys conv block
+inverter_params.Iqmin=inverter_params.Qmin/vmag_inv; % limit in phys conv block
 
-% For constant impedance load, expression for IC is:
-% Vinf/(1+Zl/ZL) % is complex, so take mag and phase for init cond
-% a=inverter_params.Vinf/(1+inverter_params.Zl/inverter_params.ZL);
-% Vterm_theta0=angle(a)% no freq dev
-% Vterm0=abs(a) % Vref set as this
-
-% Because doing const pow load, harder to initialize so just set to same as
-% inf bus and let fsolve initialize
-Vterm_theta0=inverter_params.theta_inf+200;
-Vterm0=475.8; % guess
-
-inverter_params.Ipmax=inverter_params.Pmax/Vterm0; % limit in phys conv block
-inverter_params.Iqmax=inverter_params.Qmax/Vterm0; % limit in phys conv block
-inverter_params.Ipmin=inverter_params.Pmin/Vterm0; % limit in phys conv block
-inverter_params.Iqmin=inverter_params.Qmin/Vterm0; % limit in phys conv block
-
-Pt0=0-real(inverter_params.Sload)
-Qt0=0-imag(inverter_params.Sload)
 inverter_params.Pnom=Pt0;
-Vref=Vterm0;
+Vref=vmag_inv;
 % inverter_params.Vterm_theta_ref=Vterm_theta0;
-w0=1; % temp
-
-x0_inv=[Vterm0 0 0 0 0 0 w0 0 repmat(0,1,4) Vterm0 Vterm_theta0 Pt0 Qt0 Vref]';
+w0=1; % temp, not used
+x0_inv=[Vref 0 0 0 0 0 w0 0 repmat(0,1,4) Vref 0 0 0 Vref]';
 % varType=[V Q Q Q I I w P I I I I V theta P Q V], theta is in radia ns
-
-
-
-%bound_infSimple
-x0_test2=[550 0 0 0 0 0]';
-% Vt=550, Vinf=480, so expect power flow from inv to inf bus
-
-% P-f droop control ref:
-% https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7513771
