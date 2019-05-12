@@ -123,8 +123,6 @@ for i=1:loads_size %For each load
         + j*omega0*L_loads(2*i-1:2*i, 2*i-1:2*i); %Impedance matrix (dq) of load i
     I_inc_loads(2*bus_number-1:2*bus_number, 2*i-1:2*i) = eye(2); % Incidence of load i connected to bus_number
 end
-Z_loads = 0.01*Z_loads;
-L_loads = 0.05*L_loads;
 inv_L_loads = pinv(L_loads); %Compute inverse of L
 
 %Construct Gen Matrices
@@ -199,7 +197,6 @@ end
 %% -- Define a parameter struct to handle all the data -- %%
 
 % Z_infbus = Z_loads;
-Z_loads = 30*Z_loads;
 %Base data
 param.omega0 = omega0;
 param.j = j;
@@ -333,7 +330,6 @@ x0 = [ -1; 0; %i_gen
     1; 0; %i_load
     1; 0; %i_line
     %0; 0; %i_infbus
-    %1; 0; 1; 0; %v_buses
     1; 0; 1; 0; %v_buses
     -pi/2;  %theta_gen
     1]; %omega_gen
@@ -356,7 +352,7 @@ catch e
 end
 
 % Let the field current be free. Can also let mechanical torque be free, or both.
-u_free = [false;true];
+u_free = [true;false];
 
 [x_eq,u(u_free)] = find_eq_u(x0,Mass_Matrix,u,u_free,param,param_limits);
 
@@ -364,7 +360,7 @@ u_free = [false;true];
 x_init = x_eq;
 
 % Perturb frequency
-x_init(12) = x_init(12)+0.02; %Comment out to show that if we start at equilibrium, we stay there
+x_init(12) = x_init(12)+0.01; %Comment out to show that if we start at equilibrium, we stay there
 
 
 
@@ -409,3 +405,18 @@ fig6 = figure()
 plot(t,x(:, 12))
 legend('\omega')
 title('Generator rotor velocity')
+
+%%
+v1d = x(end,7)
+v1q = x(end,8)
+v2d = x(end,9)
+v2q = x(end,10)
+i2d = x(end,3)
+i2q = x(end,4)
+i1d = x(end,1)
+i1q = x(end,2)
+
+p2 = v2d*i2d+v2q*i2q
+q2 = v2q*i2d-v2d*i2q
+p1 = v1d*i1d+v1q*i1q
+q1 = v1q*i1d-v1d*i1q

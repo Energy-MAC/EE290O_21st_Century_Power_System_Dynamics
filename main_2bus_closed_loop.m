@@ -2,11 +2,12 @@ clear
 clc
 close all
 %% Load data
-case_name = 'example_2bus_infbus';
+case_name = 'debug2bus';
 [Mat_lines,Mat_buses] = load_network(case_name);
 Mat_loads = load_load_impedance(case_name);
-Mat_gens = csvread('cases/example_2bus_infbus/gen_data.csv', 1,1);
-Mat_infbus = csvread('cases/example_2bus_infbus/infbus_data.csv', 1,1);
+Mat_gens = csvread('cases/debug2bus/gen_data.csv', 1,1);
+% Mat_infbus = csvread('cases/debug2bus/infbus_data.csv', 1,1);
+Mat_infbus = [];
 % Mat_convs = csvread('cases/example_3bus/conv_data.csv', 1,1);
 
 
@@ -195,7 +196,7 @@ end
 
 %% -- Define a parameter struct to handle all the data -- %%
 
-Z_infbus = Z_loads;
+% Z_infbus = Z_loads;
 %Base data
 param.omega0 = omega0;
 param.j = j;
@@ -260,7 +261,6 @@ num_variables = 2*gens_size + 2*convs_size + 2*loads_size + 2*lines_size + 2*inf
 num_inputs = gens_size + gens_size + convs_size + 2*convs_size; % Inputs [tau_m, i_f, i_dc, m]
 
 param.num_states = num_variables;
-param.num_inputs = num_inputs;
 
 %% Split size of state vector
 
@@ -322,42 +322,66 @@ param_limits.i_f_end = param_limits.i_f_init + i_f_size -1;
 % param_limits.m_convs_init = param_limits.idc_convs_end + 1;
 % param_limits.m_convs_end = param_limits.m_convs_init + m_convs_size -1;
 
+%% Params for closed-loop control
+
+% Turbine
+param_cntr.k_droop_p = 20*ones(gens_size,1);
+param_cntr.k_droop_i = 2*ones(gens_size,1);
+%param_cntr.k_droop_i = zeros(gens_size,1); Set integral gains to zero to
+%only do droop
+
+param_limits_cntr.x_turb_init = 1;
+param_limits_cntr.x_turb_end = param_limits_cntr.x_turb_init + gens_size - 1;
+
+% AVR
+param_cntr.k_avr = 1*ones(gens_size,1);
+param_cntr.v_ref_gen = 1*ones(gens_size,1);
+
+param_limits_cntr.x_avr_init = param_limits_cntr.x_turb_init + 1;
+param_limits_cntr.x_avr_end = param_limits_cntr.x_avr_init + gens_size - 1;
 
 
 %% Solve differential equation
 close all
-tspan = [0,5];
+tspan = [0,60];
 %x0 = 0.01*ones(num_variables, 1); %initial condition
 x0 = [ -1; 0; %i_gen
-    0; 0; %i_load
-    0; 0; %i_line
-    0; 0; %i_infbus
+    1; 0; %i_load
+    1; 0; %i_line
+    %0; 0; %i_infbus
+    %1; 0; 1; 0; %v_buses
     1; 0; 1; 0; %v_buses
     -pi/2;  %theta_gen
     1]; %omega_gen
-u = zeros(num_inputs, 1);
-u = [1; ... % tau_m
-    1]; % i_f 
+
+% Initial states for control states
+x0_cntr = [
+    1; % tau_m
+    1; % i_f
+];
+
 Mass_Matrix = eye(num_variables);
-for i=1:12
+for i=1:10
     Mass_Matrix(i,i) = 0;
 end
-options = odeset('Mass', Mass_Matrix);
-
-x_init = x0;
 
 
 %% Obtain initial conditions
-options1 = optimoptions('fsolve','MaxFunctionEvaluations',100000, 'MaxIterations', 50000);
-%x0 = randn(12,1);
-%x_init = fsolve(@(x) ode_init_cond(x,u,param,param_limits),x0,options1);
-%x_init
-%x_init(13) = x_init(13)+0.01
+% Get the 
+ind_ac = abs(diag(Mass_Matrix)) <= 1e-4;
+x_ac_init = find_ac(x0,Mass_Matrix,[1;1],param,param_limits);
+x0(ind_ac) = x_ac_init;
 
 %% Solve differential equation system. You can pass parameters to the
 %function using this technique
-[t,x] = ode15s(@(t,x)ode_full_system_modular(t,x,u,param, param_limits), tspan, x_init, options);
+%[t,x] = ode15s(@(t,x)ode_full_system_modular(t,x,u,param, param_limits), tspan, x_init, options);
 %[t,x] = ode23t(@(t,x)ode_full_system_modular(t,x,u,param, param_limits), tspan, x0);
+
+% Add components to Mass_Matrix for controller states
+Mass_Matrix = blkdiag(Mass_Matrix,eye(length(x0_cntr)));
+options = odeset('Mass', Mass_Matrix);
+
+[t,x] = ode15s(@(t,x)ode_full_system_closed_loop(t,x,param,param_cntr,param_limits,param_limits_cntr), tspan, [x0;x0_cntr], options);
 
 fig1 = figure()
 plot(t,x(:, 1:2))
@@ -374,22 +398,51 @@ plot(t,x(:, 5:6))
 legend('i_{t,d}', 'i_{t,q}')
 title('Line currents i_t')
 
-fig35 = figure()
-plot(t,x(:, 7:8))
-legend('i_{inf,d}', 'i_{inf,q}')
-title('Inf bus currents i_inf')
-
 fig4 = figure()
-plot(t,x(:, 9:12))
+plot(t,x(:, 7:10))
 legend('v_{1,d}', 'v_{1,q}','v_{2,d}', 'v_{2,q}')
 title('Voltages')
 
 fig5 = figure()
-plot(t,x(:, 13) + pi/2)
+plot(t,x(:, 11) + pi/2)
 legend('\theta')
 title('Generator angle')
 
 fig6 = figure()
-plot(t,x(:, 14))
+plot(t,x(:, 12))
 legend('\omega')
 title('Generator rotor velocity')
+
+fig8 = figure();
+plot(t,x(:,13))
+legend('\tau_m')
+title('Mechanical torque');
+
+fig7 = figure();
+plot(t,x(:,14))
+legend('i_f')
+title('Field current');
+
+%%
+v1d = x(:,7);
+v1q = x(:,8);
+v2d = x(:,9);
+v2q = x(:,10);
+i2d = x(:,3);
+i2q = x(:,4);
+i1d = x(:,1);
+i1q = x(:,2);
+
+p2 = v2d.*i2d+v2q.*i2q;
+q2 = v2q.*i2d-v2d.*i2q;
+p1 = v1d.*i1d+v1q.*i1q;
+q1 = v1q.*i1d-v1d.*i1q;
+
+figure;
+plot(t,vecnorm([v1d v1q],2,2))
+title('Voltage Magnitude')
+legend('Bus 1')
+
+figure;
+plot(t,p2)
+title('Power');
