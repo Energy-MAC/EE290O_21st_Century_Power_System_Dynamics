@@ -1,6 +1,7 @@
 clear
 clc
 close all
+addpath(genpath('device_equations'))
 %% Load data
 case_name = 'debug2bus';
 [Mat_lines,Mat_buses] = load_network(case_name);

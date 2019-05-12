@@ -7,6 +7,6 @@ tau_e = zeros(num_gens,1);
 for i=1:num_gens
    tau_e(i) = electricalTorque(theta_g(i), i_g(2*i-1:2*i), i_f(i), l_m(i)); 
 end
-%tau_e
+
 domegag_dt = invM*(-D*(omega_g-1) + tau_m - tau_e)/2;
 end
