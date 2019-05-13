@@ -377,47 +377,66 @@ x_init(12) = x_init(12)+0.01; %Comment out to show that if we start at equilibri
 [t,x] = ode15s(@(t,x)ode_full_system_modular(t,x,u,param, param_limits), tspan, x_init, options);
 %[t,x] = ode23t(@(t,x)ode_full_system_modular(t,x,u,param, param_limits), tspan, x0);
 
-fig1 = figure()
+
+v1d = x(:,7);
+v1q = x(:,8);
+v2d = x(:,9);
+v2q = x(:,10);
+i2d = x(:,3);
+i2q = x(:,4);
+i1d = x(:,1);
+i1q = x(:,2);
+
+p2 = v2d.*i2d+v2q.*i2q;
+q2 = v2q.*i2d-v2d.*i2q;
+p1 = v1d.*i1d+v1q.*i1q;
+q1 = v1q.*i1d-v1d.*i1q;
+
+%%
+figure('units','normalized','outerposition',[0 0 1 1])
+subplot(3,3,1)
 plot(t,x(:, 1:2))
 legend('i_{g,d}', 'i_{g,q}')
 title('Generator currents i_g')
 
-fig2 = figure()
+subplot(3,3,2)
 plot(t,x(:, 3:4))
 legend('i_{l,d}', 'i_{l,q}')
 title('Load currents i_l')
 
-fig3 = figure()
+subplot(3,3,3)
 plot(t,x(:, 5:6))
 legend('i_{t,d}', 'i_{t,q}')
 title('Line currents i_t')
 
-fig4 = figure()
+subplot(3,3,4)
 plot(t,x(:, 7:10))
 legend('v_{1,d}', 'v_{1,q}','v_{2,d}', 'v_{2,q}')
 title('Voltages')
 
-fig5 = figure()
+subplot(3,3,5)
 plot(t,x(:, 11) + pi/2)
 legend('\theta')
 title('Generator angle')
+ylabel('Radians')
 
-fig6 = figure()
+subplot(3,3,6)
 plot(t,x(:, 12))
 legend('\omega')
 title('Generator rotor velocity')
 
-%%
-v1d = x(end,7)
-v1q = x(end,8)
-v2d = x(end,9)
-v2q = x(end,10)
-i2d = x(end,3)
-i2q = x(end,4)
-i1d = x(end,1)
-i1q = x(end,2)
+subplot(3,3,7)
+plot(t,vecnorm([v1d v1q],2,2),t,vecnorm([v2d v2q],2,2))
+title('Voltage Magnitude')
+legend('Bus 1','Bus 2')
 
-p2 = v2d*i2d+v2q*i2q
-q2 = v2q*i2d-v2d*i2q
-p1 = v1d*i1d+v1q*i1q
-q1 = v1q*i1d-v1d*i1q
+subplot(3,3,8)
+plot(t,[-p1 ,p2])
+title('Real Power');
+legend('Bus 1 Injected','Bus 2 Consumed')
+
+subplot(3,3,9)
+plot(t,[-q1 ,q2])
+title('Reactive Power');
+legend('Bus 1 Injected','Bus 2 Consumed')
+saveas(gcf,'figures\main_2bus_example.png')
