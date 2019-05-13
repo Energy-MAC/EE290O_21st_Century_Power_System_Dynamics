@@ -328,7 +328,7 @@ param_limits.i_f_end = param_limits.i_f_init + i_f_size -1;
 % Turbine
 param_cntr.k_droop_p = 20*ones(gens_size,1);
 param_cntr.k_droop_i = 2*ones(gens_size,1);
-%param_cntr.k_droop_i = zeros(gens_size,1); Set integral gains to zero to
+%param_cntr.k_droop_i = zeros(gens_size,1); %Set integral gains to zero to
 %only do droop
 
 param_limits_cntr.x_turb_init = 1;
@@ -384,45 +384,6 @@ options = odeset('Mass', Mass_Matrix);
 
 [t,x] = ode15s(@(t,x)ode_full_system_closed_loop(t,x,param,param_cntr,param_limits,param_limits_cntr), tspan, [x0;x0_cntr], options);
 
-fig1 = figure()
-plot(t,x(:, 1:2))
-legend('i_{g,d}', 'i_{g,q}')
-title('Generator currents i_g')
-
-fig2 = figure()
-plot(t,x(:, 3:4))
-legend('i_{l,d}', 'i_{l,q}')
-title('Load currents i_l')
-
-fig3 = figure()
-plot(t,x(:, 5:6))
-legend('i_{t,d}', 'i_{t,q}')
-title('Line currents i_t')
-
-fig4 = figure()
-plot(t,x(:, 7:10))
-legend('v_{1,d}', 'v_{1,q}','v_{2,d}', 'v_{2,q}')
-title('Voltages')
-
-fig5 = figure()
-plot(t,x(:, 11) + pi/2)
-legend('\theta')
-title('Generator angle')
-
-fig6 = figure()
-plot(t,x(:, 12))
-legend('\omega')
-title('Generator rotor velocity')
-
-fig8 = figure();
-plot(t,x(:,13))
-legend('\tau_m')
-title('Mechanical torque');
-
-fig7 = figure();
-plot(t,x(:,14))
-legend('i_f')
-title('Field current');
 
 %%
 v1d = x(:,7);
@@ -439,11 +400,48 @@ q2 = v2q.*i2d-v2d.*i2q;
 p1 = v1d.*i1d+v1q.*i1q;
 q1 = v1q.*i1d-v1d.*i1q;
 
-figure;
-plot(t,vecnorm([v1d v1q],2,2))
-title('Voltage Magnitude')
-legend('Bus 1')
+%%
+figure('units','normalized','outerposition',[0 0 0.8 1])
 
-figure;
-plot(t,p2)
-title('Power');
+subplot(4,2,1)
+plot(t,x(:, 1:2))
+legend('i_{g,d}', 'i_{g,q}')
+title('Generator currents i_g')
+
+subplot(4,2,2)
+plot(t,x(:, 7:10))
+legend('v_{1,d}', 'v_{1,q}','v_{2,d}', 'v_{2,q}')
+title('Voltages')
+
+subplot(4,2,3)
+plot(t,x(:, 11) + pi/2)
+legend('\theta')
+title('Generator angle')
+ylabel('Radians')
+
+subplot(4,2,4)
+plot(t,x(:, 12))
+legend('\omega')
+title('Generator rotor velocity')
+
+subplot(4,2,5)
+plot(t,vecnorm([v1d v1q],2,2),t,vecnorm([v2d v2q],2,2))
+title('Voltage Magnitude')
+legend('Bus 1','Bus 2')
+
+subplot(4,2,6)
+plot(t,[-p1 ,p2])
+title('Real Power');
+legend('Bus 1 Injected','Bus 2 Consumed')
+
+subplot(4,2,7)
+plot(t,x(:,14))
+legend('i_f')
+title('Field current');
+
+subplot(4,2,8)
+plot(t,x(:,13))
+legend('\tau_m')
+title('Mechanical torque');
+
+saveas(gcf,'figures\main_2bus_closed_loop_AVR_turb.png')
