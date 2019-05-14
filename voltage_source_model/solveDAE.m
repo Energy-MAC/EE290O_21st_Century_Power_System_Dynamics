@@ -46,7 +46,7 @@ M(11,11) = 0;   % Eq
 
 % NEED TO UPDATE
 M(14,14) = 0;   % Vt
-M(15,15) = 0;  % theta_conv
+M(15,15) = 0;   % theta_conv
 M(16,16) = 0;   % Qg
 M(17,17) = 0;   % Pactual
 %M(18,18) -> domega/dt -> 1
@@ -55,14 +55,14 @@ M(19,19) = 0;   % Ed_star
 M(20,20) = 0;   % Eq_star
 
 % Set up time span vector
-tspan = 0:Ts:1;
+tspan = 0:Ts:1; %HAVE AN ERROR WHEN I EXTEND THIS TIME
 
 % Solve DAEs - steady state
 options = odeset('Mass', M, 'RelTol', 1e-4, 'AbsTol', 1e-6);
 [t, y] = ode15s(@(t,x)VoltageSource_InfBus(t,x,inverter_params),tspan,x0_inv_infbus,options);
 
 figure(1)
-plot(y(:,14))
+plot(y(:,6))
 
 
 % % Solve DAEs with step change in load

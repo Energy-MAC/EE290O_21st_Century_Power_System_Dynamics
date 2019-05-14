@@ -24,12 +24,14 @@ f=[
     % Solves for Vt, theta_conv
     % 0 =
     % old: %Pactual - (Vt*Vinf*sin(theta_conv - theta_inf))/X - Pline;
-    (Vt*Vinf*sin(theta_conv - theta_inf))/X - Pactual;  
+    (Vt*Vinf*sin(theta_conv - theta_inf))/X + Pload - Pactual;  
+% Pload = Vt^2/real(ZL)
+% Qload = Vt^2/imag(ZL)
 
     % Solves for Vt, theta_conv
     % 0 = 
     % old :%Qg - (Vt^2/X - Vt*Vinf*cos(theta_conv - theta_inf)/X) - Qline;
-    (Vt^2/X - Vt*Vinf*cos(theta_conv - theta_inf)/X) - Qg;
+    (Vt^2/X - Vt*Vinf*cos(theta_conv - theta_inf)/X) + Qload - Qg;
     
     % how do I add this in? 
     % dtheta_conv/dt =

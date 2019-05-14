@@ -94,7 +94,7 @@ theta_conv_0 = 0;
 Qg_0 = 480;
 Pactual_0 = 0;
 omega_0 = inverter_params.omega_s;
-Vt_0 = 485;
+Vt_0 = 480;
 
 Ed_star_0 = 480;
 Eq_star_0 = 0;
