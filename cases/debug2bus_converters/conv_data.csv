@@ -1,0 +1,2 @@
+ConvName,BusNumber,Resistance [pu],Inductance [pu],DCParallelConductance [pu],DCParallelCapacitance [pu],vdc_ref,k_matchingcontrol
+Conv1,1,0.0001,0.00001,0.0001,0.1,2,0
