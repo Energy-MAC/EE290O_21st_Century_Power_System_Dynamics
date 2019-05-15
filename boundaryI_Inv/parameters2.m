@@ -55,6 +55,7 @@ inverter_params.Iqmax=inverter_params.Qmax/vmag_inv; % limit in phys conv block
 inverter_params.Ipmin=inverter_params.Pmin/vmag_inv; % limit in phys conv block
 inverter_params.Iqmin=inverter_params.Qmin/vmag_inv; % limit in phys conv block
 
+
 inverter_params.Pnom=Pt0;
 Vref=vmag_inv;
 % inverter_params.Vterm_theta_ref=Vterm_theta0;

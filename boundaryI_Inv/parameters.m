@@ -49,7 +49,7 @@ inverter_params.Tpwm=0.02 % for PWM switching time const
 
 % inf bus network
 % Note: line impedance usually much smaller than load impedance
-inverter_params.Zl=20; % line impedance
+inverter_params.Zl=20j; % line impedance, should be totally reactive
 inverter_params.Sload=100+100*j; % load, complex
 
 inverter_params.Vinf=480
@@ -57,9 +57,9 @@ inverter_params.theta_inf=0; % radians
 
 %-------------------------------------
 % % Turn controller gains off:
-inverter_params.Kpv=0;
-inverter_params.Kiv=0;
-inverter_params.Kwi=0; % make large to "turnoff" P-f loop
+% inverter_params.Kpv=0;
+% inverter_params.Kiv=0;
+% inverter_params.Kwi=0; % make large to "turnoff" P-f loop
 
 %------------------------------------
 % boundaryinv_infBus
@@ -76,8 +76,8 @@ inverter_params.Kwi=0; % make large to "turnoff" P-f loop
 
 % Because doing const pow load, harder to initialize so just set to same as
 % inf bus and let fsolve initialize
-Vterm_theta0=inverter_params.theta_inf+200;
-Vterm0=475.8; % guess
+%Vterm_theta0=inverter_params.theta_inf+200;
+Vterm0=475.8; % guess after simulating and seeing what DAE sim starts with
 
 inverter_params.Ipmax=inverter_params.Pmax/Vterm0; % limit in phys conv block
 inverter_params.Iqmax=inverter_params.Qmax/Vterm0; % limit in phys conv block
@@ -88,10 +88,11 @@ Pt0=0-real(inverter_params.Sload)
 Qt0=0-imag(inverter_params.Sload)
 inverter_params.Pnom=Pt0;
 Vref=Vterm0;
+
 % inverter_params.Vterm_theta_ref=Vterm_theta0;
 w0=1; % temp
 
-x0_inv=[Vterm0 0 0 0 0 0 w0 0 repmat(0,1,4) Vterm0 Vterm_theta0 Pt0 Qt0 Vref]';
+x0_inv=[Vterm0 0 0 0 0 0 w0 0 repmat(0,1,4) Vterm0 0 Pt0 Qt0 Vref]';
 % varType=[V Q Q Q I I w P I I I I V theta P Q V], theta is in radia ns
 
 

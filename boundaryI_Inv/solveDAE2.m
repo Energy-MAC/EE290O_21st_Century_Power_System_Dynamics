@@ -12,9 +12,6 @@
 %%
 % Jaimie Swartz
 clc; close all; clear all;
-%%Load System Models and Parameters
-% addpath(genpath('device_models'))
-% addpath('utils')
 
 parameters % call the parameters.m to set populate workspace
 % after calling, workspace will have "inverter_params" and x0 vars
@@ -42,7 +39,7 @@ Sload=[]; % store load changes to plot later
 % before step change in load Q
     tspan1 = runItvl(1):Ts:runItvl(2);
     Sload=[Sload repmat(inverter_params.Sload,1,length(tspan1))];
-4.     [t1,y1] = ode15s(@(t,x)boundaryinv_infBus2(t,x,inverter_params,Ts),tspan1,x00_test1,options);
+    [t1,y1] = ode15s(@(t,x)boundaryinv_infBus2(t,x,inverter_params,Ts),tspan1,x00_test1,options);
 
     a=inverter_params.Sload;
     inverter_params.Sload=1*real(a)+j*1.5*imag(a) % chang in const pow load

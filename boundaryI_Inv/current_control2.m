@@ -20,18 +20,6 @@ Kwi=params.Kwi;
 kphi=params.kphi; % associated with 60Hz, see equations for derivation
 Pnom=params.Pnom;
 
-% % See handwritten work for derivation of state space form from GE PV
-% % inverter paper "Solar Photovoltaic (PV) Plant Models in PSLF"
-% A=[0 0;...
-%     Kvi 0];
-% B=[KQi -KQi 0;...
-%     0 0 0];
-% C=[0 1];
-% D=[0 0 1/Vterm];
-% 
-% % naming is needed for concatenation
-% mySys=ss(A,B,C,D,'InputName',{'cur_Qcmd','cur_Qgen','cur_Pord'},'OutputName',{'Iqcmd','Ipcmd'});
-
 % x(5) to x(8)
 kphi=60; % associated with 60Hz, see equations for derivation
 f=[
