@@ -43,7 +43,7 @@ gov_params.T_4 = 0;%s
 gov_params.T_5 = 50;%s
 gov_params.Pmax = 1.2;%pu
 gov_params.Pmin = 0.3;%pu
-
+gov_params.W_ref = SM_params.W_s;
 
 
 
