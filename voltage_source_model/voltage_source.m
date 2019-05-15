@@ -15,8 +15,8 @@ function dy = voltage_source(x_inner_curr_loop, Ed, Eq, Pactual, Qg, Vt, theta_c
 Rf = params.Rf;
 Xf = params.Xf;
 
-id = x_inner_curr_loop(1);  % s6 = iq
-iq = x_inner_curr_loop(2);  % s7 = id
+iq = x_inner_curr_loop(1);  % s6 = iq
+id = x_inner_curr_loop(2);  % s7 = id
 
 %need to calculate Vtd, Vtq
 % Vtd = (Pactual+Qg)/(2*id);
@@ -29,9 +29,11 @@ dy = [
     
     %%% Algebraic equations: 
     
+    % Solves for Ed
     % 0 = 
     Vtd + id*Rf - iq*Xf - Ed;
     
+    % Solves for Eq
     % 0 = 
     Vtq + iq*Rf + id*Xf - Eq;
 
