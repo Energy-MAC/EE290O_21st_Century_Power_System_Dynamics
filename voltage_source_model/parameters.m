@@ -21,20 +21,22 @@
 % %reference points
 inverter_params.Vref = 480;         % volts            
 inverter_params.Pref = 0;           % watts
-inverter_params.omega_s = 1;    % per-unit 377;      % rad/s
+inverter_params.omega_s = 1;        % per-unit 377;      % rad/s
 
 %QV droop - values taken from Rama Thesis Table 5.1
 % needed to obtain stable operation between converers when multiple
 % converters connected to same bus
-inverter_params.Rq = 0.0;   % per-unit
-inverter_params.Rp = 0.05;  % per-unit
+inverter_params.Rq = 0.00;   % per-unit
+inverter_params.Rp = 0.05*100;  % per-unit
 
 %Outer current loop - values taken from Rama paper Section B 
 % gains
-inverter_params.Ki = 0.01; %(from thesis) %20.0;
-inverter_params.Kp = 0.01; %(from thesis) %4.0;
-inverter_params.Kiq = 0.01; 
-inverter_params.Kip = 0.1;
+%Note: these need to be tuned a lot differentially the in the paper if not
+%using limit / saturation blocks
+inverter_params.Ki = 10;%1;%4.0; %(from thesis) %20.0;
+inverter_params.Kp = 10;%1;%0.01; %(from thesis) %4.0;
+inverter_params.Kiq = 0;%0.001;%0.0; %(from thesis pg. 75 - 10.0)
+inverter_params.Kip = 10;%10;%4.0; %10.0;%(from thesis pg. 75 - 10.0)
 
 % time constants
 inverter_params.Tr = 0.02;  % sec, from Rama thesis Table 5.1
@@ -53,19 +55,17 @@ inverter_params.Tq = 0.01;     % sec
 %PWM stage
 inverter_params.Teq = 0.01;    % sec
 inverter_params.Ted = 0.01;    % sec
- 
-% inverter_params.Vdc
-% inverter_params.VT
- 
+  
 %coupling impedance - from thesis pg. 88
-inverter_params.Rf = 0.004;    % per-unit
-inverter_params.Xf = 0.05;      % per-unit         
+inverter_params.Rf = 0.004*100;    % per-unit
+inverter_params.Xf = 0.05*100;      % per-unit         
 
 % inf bus network
-inverter_params.Xe=0.5;
-inverter_params.ZL=0.5;
+%inverter_params.Xe=0.5;
+inverter_params.Zl=20j; % line impedance, should be totally reactive %0.5;
+inverter_params.Sload = 100+100*j;  % load, complex
 inverter_params.Vinf=480;
-inverter_params.theta_inf = 0;
+inverter_params.theta_inf = 0;  % radians
 
 %% x0 starting states
 
@@ -75,15 +75,15 @@ inverter_params.theta_inf = 0;
 
 % for converter connected to infinite bus example 
 %initial conditions
-s1_0 = 480;
+s1_0 = 0;
 s2_0 = 480;
 s3_0 = 0;
 s4_0 = 0;
 s5_0 = 0;
-IQcmd_0 = -1;
+IQcmd_0 = 0;
 IPcmd_0 = 0;
-s6_0 = 0;   % iq
-s7_0 = 0;   % id
+s6_0 = 100/(-480);%0;   % iq
+s7_0 = 100/480; %0;   % id
 Ed_0 = 480;
 Eq_0 = 0;
 s8_0 = 480;
@@ -91,8 +91,8 @@ s9_0 = 0;
 %Pline_0 = 0;
 %Qline_0 = 0;
 theta_conv_0 = 0;
-Qg_0 = 480;
-Pactual_0 = 0;
+Qg_0 = 0;         %Qg_0 = 480;
+Pactual_0 = 0;    %Pactual_0 = 0;
 omega_0 = inverter_params.omega_s;
 Vt_0 = 480;
 
@@ -100,6 +100,8 @@ Ed_star_0 = 480;
 Eq_star_0 = 0;
 
 x0_inv_infbus=[s1_0 s2_0 s3_0 s4_0 s5_0 IQcmd_0 IPcmd_0 s6_0 s7_0 Ed_0 Eq_0 s8_0 s9_0 Vt_0 theta_conv_0 Qg_0 Pactual_0 omega_0 Ed_star_0 Eq_star_0]';
+
+inverter_params.Pnom = Pactual_0;
 
 %x0_inv_infbus=[s1_0 s2_0 s3_0 s4_0 s5_0 IQcmd_0 IPcmd_0 s6_0 s7_0 Ed_0 Eq_0 s8_0 s9_0 Pline_0 Qline_0 theta_conv_0 Qg_0 Pactual_0 omega_0 Vt_0]';
 %s1 s2 s3 s4 s5 IQcmd IPcmd s6(iq) s7(id) Ed Eq s8 s9 Pline Qline

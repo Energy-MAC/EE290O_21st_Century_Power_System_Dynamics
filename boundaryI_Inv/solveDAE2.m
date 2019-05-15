@@ -28,6 +28,7 @@ printmat([x0_inv x00_test1 xdot_init], 'Init States', stateLabel1,'x0 x00_test1 
 
 %printmat([x0_inv xdot_init], 'Init States', stateLabel1,'x0 xdot')
 
+%% 
 % solve DAE
 n=17; % num states
 M=eye(n);

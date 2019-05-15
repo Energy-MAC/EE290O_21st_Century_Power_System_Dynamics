@@ -68,8 +68,9 @@ inverter_dxdt = [
      infBusNwk(Vt, theta_conv, omega, Qg, Pactual, x_inner_curr_loop, params);
 
      %PWM block - still need to figure out how to implement
-    PWM_block(t, Ed, Eq, omega, Ed_star, Eq_star, params)
-     
+    %PWM_block(t, Ed, Eq, omega, Ed_star, Eq_star, params)
+    PWM_block_internal_states(t, x_pwm_sw, omega, Ed_star, Eq_star, params)
+    
     %0;  % dVt/dt = 0
     
     

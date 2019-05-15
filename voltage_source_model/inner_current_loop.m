@@ -1,5 +1,5 @@
 
-I% M-file accepts two arguments: t and y
+% M-file accepts two arguments: t and y
 % returns column vector dy
 
 
@@ -32,3 +32,4 @@ dy = [
     (1/Td)*(IPcmd - s7);
 
 ];
+end
