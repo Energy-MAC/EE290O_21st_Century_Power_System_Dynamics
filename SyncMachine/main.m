@@ -28,6 +28,7 @@ tspan = [0:0.1:10];
 y0 = [ 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0.9, 1, 0, 1, 0 ];
 
 y00 = fsolve(@(y)InfBus_to_2axis(0,y,params),y0);
+y0 = round(y00,1); %perturb the initial conditions
 
 % mass matrix is 15x15 identy in this simple case
 M = zeros(15);
@@ -37,7 +38,7 @@ M(3,3) = 1;
 M(4,4) = 1;
 options = odeset('Mass', M);  
 
-[t,y] = ode15s(@(t,y)InfBus_to_2axis(t,y,params),tspan,y00,options);
+[t,y] = ode15s(@(t,y)InfBus_to_2axis(t,y,params),tspan,y0,options);
 figure(1)
 plot(t,y(:,[1,2,14,15]))
 title('Time Series Plot of Rotor Angle, Speed, and Electrical Power');

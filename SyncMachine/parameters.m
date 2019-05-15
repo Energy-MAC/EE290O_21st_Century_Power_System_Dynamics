@@ -21,6 +21,31 @@ SM_params.Tprime_d0 = 6.1; %d-axis open circuit transient time constant [s]
 SM_params.Tprime_q0 = 0.3; %q-axis open circuit transient time constant [s]
 %SM_params.v_g = 1; %Initial Voltage magnitude of the generator as presented to the system (I believe this to be unneccessary)
 
+%AVR number 2 from Milano, pg. 526
+AVR_params.Vmax_r = 2.05; %pu
+AVR_params.Vmin_r = 0; %pu
+AVR_params.K_a = 20; %pu/pu
+AVR_params.T_a = 0.02; %s
+AVR_params.K_f = 0.001; % s pu/pu
+AVR_params.T_f = 1; %s
+AVR_params.K_e = 1; %pu
+AVR_params.T_e = 1.98; %s
+AVR_params.T_r = 0.001; %s
+AVR_params.A_e = 0.0006; %no units
+AVR_params.B_e = 0.9; %1/pu
+
+%Governor Params from Milano for Machine #2, from table D.8
+gov_params.R = 0.02;%pu
+gov_params.T_s = 0.1;%s
+gov_params.T_c = 0.45;%s
+gov_params.T_3 = 0;%s
+gov_params.T_4 = 0;%s
+gov_params.T_5 = 50;%s
+gov_params.Pmax = 1.2;%pu
+gov_params.Pmin = 0.3;%pu
+gov_params.W_ref = SM_params.W_s;
+
+
 
 % T_AA %d-axis additional leakage time constant
 % alpha_p %Active power ratio at node
